@@ -1,0 +1,137 @@
+\begin{thebibliography}{10}
+\def\selectlanguageifdefined#1{
+\expandafter\ifx\csname date#1\endcsname\relax
+\else\selectlanguage{#1}\fi}
+
+\bibitem{Adolph}
+\selectlanguageifdefined{english}
+Adolph, K.~E.
+\emph{{Learning to learn}}.
+
+\bibitem{Evgeniou2007}
+\selectlanguageifdefined{english}
+Evgeniou, A. A.~T.,  and M.~Pontil.
+2007.
+{Multi-task feature learning}.
+\emph{Advances in Neural Information Processing Systems}
+19(January):~41.
+
+\bibitem{Varnek2012}
+\selectlanguageifdefined{english}
+Varnek, A.,  and I.~Baskin.
+2012.
+{Machine learning methods for property prediction in chemoinformatics: Quo
+  Vadis?}
+\emph{Journal of Chemical Information and Modeling}
+52(6):1413--1437.
+doi: 10.1021/ci200409x.
+
+\bibitem{Caruana2003}
+\selectlanguageifdefined{english}
+Caruana, R.,  and V.~R. de~Sa.
+2003.
+{Benefitting from the Variables that Variable Selection Discards}.
+\emph{Journal of Machine Learning Research}
+3(7-8):1245--1264.
+doi: 10.1162/153244303322753652.
+
+\bibitem{Abdi2003}
+\selectlanguageifdefined{english}
+Abdi, H.
+2003.
+{Partial Least Squares (PLS) Regression}.
+\emph{Encyclopedia for research methods for the social sciences}
+792--795.
+doi: http://dx.doi.org/10.4135/9781412950589.n690.
+
+\bibitem{Geladi1988}
+\selectlanguageifdefined{english}
+Geladi, P.
+1988.
+{Notes on the history and nature of partial least squares (PLS) modelling}.
+\emph{Journal of Chemometrics}
+2(January):231--246.
+doi: http://doi.wiley.com/10.1002/cem.1180020403.
+
+\bibitem{Hoskuldsson1988}
+\selectlanguageifdefined{english}
+H{\"{o}}skuldsson, A.
+1988.
+{PLS regression.}
+\emph{Journal of Chemometrics}
+2(August 1987):581--591.
+doi: 10.1002/cem.1180020306.
+
+\bibitem{Lehky2014}
+\selectlanguageifdefined{english}
+Lehky, S.~R., R.~Kiani, H.~Esteky,  and K.~Tanaka.
+2014.
+{Dimensionality of object representations in monkey inferotemporal cortex}.
+\emph{Neural computation}
+1872(10):1840--1872.
+doi: 10.1162/NECO.
+
+\bibitem{Lu2004}
+\selectlanguageifdefined{english}
+Lu, W.-C., N.-Y. Chen, G.-Z. Li,  and J.~Yang.
+2004.
+{Multitask Learning Using Partial Least Squares Method}.
+\emph{Proceedings of the Seventh International Conference on Information
+  Fusion; International Society of Information Fusion}
+1:79--84.
+
+\bibitem{Frank1990}
+\selectlanguageifdefined{english}
+Frank, I.~E.
+1990.
+{A nonlinear PLS model}.
+\emph{Chemometrics and Intelligent Laboratory Systems}
+8(2):109--119.
+doi: 10.1016/0169-7439(90)80128-S.
+
+\bibitem{Mcavovt1992}
+\selectlanguageifdefined{english}
+Mcavovt, J.,  and C.~Process.
+1992.
+{USING}
+16(4):379--391.
+
+\bibitem{Yan2003}
+\selectlanguageifdefined{english}
+Yan, X.~F., D.~Z. Chen,  and S.~X. Hu.
+2003.
+{Chaos-genetic algorithms for optimizing the operating conditions based on
+  RBF-PLS model}.
+\emph{Computers and Chemical Engineering}
+27(10):1393--1404.
+doi: 10.1016/S0098-1354(03)00074-7.
+
+\bibitem{Zhou2007}
+\selectlanguageifdefined{english}
+Zhou, Y.~P., J.~H. Jiang, W.~Q. Lin, L.~Xu, H.~L. Wu et~al.
+2007.
+{Artificial neural network-based transformation for nonlinear partial
+  least-square regression with application to QSAR studies}.
+\emph{Talanta}
+71(2):848--853.
+doi: 10.1016/j.talanta.2006.05.058.
+
+\bibitem{Xuefeng2010}
+\selectlanguageifdefined{english}
+Xuefeng, Y.
+2010.
+{Hybrid artificial neural network based on BP-PLSR and its application in
+  development of soft sensors}.
+\emph{Chemometrics and Intelligent Laboratory Systems}
+103(2):152--159.
+doi: 10.1016/j.chemolab.2010.07.002.
+
+\bibitem{Bulut2014}
+\selectlanguageifdefined{english}
+Bulut, E.,  and E.~Egrioglu.
+2014.
+{A New Partial Least Square Method Based on Elman Neural Network}
+4(4):154--158.
+doi: 10.5923/j.ajis.20140404.05.
+
+\end{thebibliography}
