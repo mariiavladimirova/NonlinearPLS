@@ -279,43 +279,44 @@ $$
 \end{algorithm}
 \end{center}
 
-\textcolor{red}{ДАЛЬШЕ НЕКРАСИВЫЙ РИСУНОК}
+
 Размеры векторов в алгоритме можно изобразить следующим образом:
 
-\tikzstyle{sensor_x}=[draw, line width=0.4mm, fill=blue!0, text width=4em, text centered, minimum height=5em]
-\tikzstyle{sensor_y}=[draw, line width=0.4mm, fill=blue!0, text width=2.7em, text centered, minimum height=5em]
+\tikzstyle{sensor_x}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=3em]
+\tikzstyle{sensor_t}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2em]
+\tikzstyle{sensor_p}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=3em]
+\tikzstyle{sensor_y}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2.5em]
+\tikzstyle{sensor_q}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=2.5em]
 
-
-
-
-\def\blockdist{2.3}
-\def\edgedist{2.5}
-
-% \vspace{1cm}
 \hspace{1cm}
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
     \node (x) [sensor_x]  {$\bX$};
-    \path (x.east)+(3.85,0) node (y) [sensor_y] {$\bY$};
+    \node[right of = x, node distance=3em] (x_equal) {=};
+    \node[sensor_t, right of = x_equal, node distance=2.5em] (t) {$\bT$};
+    \node[right of = t, node distance=2.5em] (x_times) {$\times$};
+    \node[sensor_p, right of = x_times, node distance=2.8em] (p) {$\bP^{\T}$};
+    \node[right of = p, node distance=2.8em] (x_sum) {+};
+    \node[sensor_x, right of = x_sum, node distance=2.8em] (e) {$\bE$};
+    % \node[below of = x, node distance=3.5em] (x_size) {\footnotesize{$m\times n$}};
+    % \node[below of = t, node distance=3.5em] (t_size) {\footnotesize{$m\times l$}};
+    % \node[below of = p, node distance=2.3em] (p_size) {\footnotesize{$l\times n$}};
+    % \node[below of = e, node distance=3.5em] (e_size) {\footnotesize{$m\times n$}};
 
-    %X
-    \path [draw, line width=0.5mm] +(1.2, 1) -- node [right] {$\bt$}
-      +(1.2,-1);
-    \path [draw, line width=0.5mm] +(0.95, -2) -- node [left of=2] {$\bp^{\T}$}
-      +(-0.7, -2); 
-    \path [draw, line width=0.5mm] +(0.95, -1.5) -- node [left of=2] {$\bw^{\T}$ }
-      +(-0.7, -1.5); 
-    %Y
-    \path [draw, line width=0.5mm] +(3.9, 1) -- node [left] {$\bu$}
-      +(3.9,-1);
-    \path [draw, line width=0.5mm] +(4.2, -2) -- node [left of=-1.3] {$\bq^{\T}$}
-      +(5.5, -2);
-    \path [draw, line width=0.5mm] +(4.2, -1.5) -- node [left of=-1.3] {$\bc^{\T}$}
-      +(5.5, -1.5);
+    \node[below of = x, node distance=7em] (y) [sensor_y]  {$\bY$};
+    \node[below of = x_equal, node distance=7em] (y_equal) {=};
+    \node[sensor_t, below of = t, node distance=7em] (u) {$\bU$};
+    \node[below of = x_times, node distance=7em] (y_times) {$\times$};
+    \node[sensor_q, below of = p, node distance=7em] (q) {$\bQ^{\T}$};
+    \node[below of = x_sum, node distance=7em] (y_sum) {+};
+    \node[sensor_y, below of = e, node distance=7em] (f) {$\bF$};
 \end{tikzpicture}
 \caption{Размерности векторов в алгоритме PLS}
 \end{figure}
+
+
+
 % \begin{center}
 % \begin{algorithm}
 % \begin{algorithmic}[1]
@@ -666,16 +667,176 @@ PLS                                                                             
 \nocite{*}
 
 \bibliographystyle{unsrt}
-\bibliography{papers_pls.bib}
-% \begin{thebibliography}{00}
+\begin{thebibliography}{10}
+\def\selectlanguageifdefined#1{
+\expandafter\ifx\csname date#1\endcsname\relax
+\else\selectlanguage{#1}\fi}
 
-% \bibitem{uspenskiy15amctm}
-%     Uspenskiy\;V., Vorontsov\;K., Tselykh\;V., Bunakov\;V.
-%     Information Function of the Heart:
-%     Discrete and Fuzzy Encoding of the ECG-Signal for Multidisease Diagnostic System.
-%     In~\emph{Advanced Mathematical and Computational Tools in Metrology and Testing X, Series on Advances in Mathematics for Applied Sciences}. 2015. World Scientific. Singapore. Vol.\,86. Pp. 377--384.
-% \end{thebibliography}
+\bibitem{Chong2005} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Chong, Il Gyo and Jun, Chi Hyuck}
+{Performance of some variable selection methods when multicollinearity is present}~//
+Chemometrics and Intelligent Laboratory Systems, 2005.
+Vol.~78.
+No.~1.
+P.~103--112.
+
+\bibitem{Xuefeng2010} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Xuefeng, Yan}
+{Hybrid artificial neural network based on BP-PLSR and its application in development of soft sensors}~//
+Chemometrics and Intelligent Laboratory Systems, 2010.
+Vol.~103.
+No.~2.
+P.~152--159.
+
+\bibitem{Mcavovt1992} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Mcavovt, J. and Process, Chemical}
+{Title }~//
+Journal name, 2005.
+Vol.~16.
+No.~4.
+P.~379--391.
+
+\bibitem{Yan2003} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Yan, Xuefeng F. and Chen, Dezhao Z. and Hu, Shangxu X.}
+{Chaos-genetic algorithms for optimizing the operating conditions based on RBF-PLS model}~//
+Computers and Chemical Engineering, 2003.
+Vol.~27.
+No.~10.
+P.~1393--1404.
+
+\bibitem{Frank1990} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Frank, Ildiko E.}
+{A nonlinear PLS model}~//
+Chemometrics and Intelligent Laboratory Systems, 1990.
+Vol.~8.
+No.~2.
+P.~109--119.
+
+\bibitem{Zhou2007} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Zhou, Yan Ping and Jiang, Jian Hui and Lin, Wei Qi and Xu, Lu and Wu, Hai Long and Shen, Guo Li and Yu, Ru Qin}
+{Artificial neural network-based transformation for nonlinear partial least-square regression with application to QSAR studies}~//
+Talanta, 2007.
+Vol.~71.
+No.~2.
+P.~848--853.
 
 
+\bibitem{Geladi1988} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Chong, Il Gyo and Jun, Chi Hyuck}
+{Notes on the history and nature of partial least squares (PLS) modelling}~//
+Journal of Chemometrics, 1988.
+Vol.~2.
+No.~January.
+P.~231--246.
+
+
+\bibitem{Hoskuldsson1988} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{H{\"{o}}skuldsson, Agnar}
+{PLS regression}~//
+Chemometrics and Intelligent Laboratory Systems, 1987.
+Vol.~2.
+No.~August.
+P.~581--591.
+
+
+\bibitem{Bulut2014} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Bulut, Elif and Egrioglu, Erol}
+{A New Partial Least Square Method Based on Elman Neural Network}~//
+Chemometrics and Intelligent Laboratory Systems, 2005.
+Vol.~4.
+No.~4.
+P.~154--158.
+
+
+\bibitem{Ng2013} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Ng, Kee Siong}
+{A Simple Explanation of Partial Least Squares}~//
+Journal title, 2013.
+Vol.~volume.
+No.~number.
+P.~1--10.
+
+
+\bibitem{Rosipal2011} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Rosipal, Roman}
+{Nonlinear partial least squares: An overview}~//
+Chemoinformatics and Advanced Machine Learning Perspectives: Complex Computational Methods and Collaborative Techniques, 2011.
+Vol.~number.
+No.~number.
+P.~169--189.
+
+
+\bibitem{Wold1989} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Wold, Svante and Kettaneh-Wold, Nouna and Skagerberg, Bert}
+{Nonlinear PLS modeling}~//
+Chemometrics and Intelligent Laboratory Systems, 1989.
+Vol.~7.
+No.~1-2.
+P.~53--65.
+
+\bibitem{Rosipal2006} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Rosipal, Roman and Kramer, Nicole}
+{Overview and Recent Advances in Partial Least Squares}~//
+????? C. Saunders et al. (Eds.): SLSFS 2005, LNCS 3940, 2006.
+Vol.~?.
+No.~?.
+P.~34--51.
+
+\bibitem{Lu2004} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Lu, Wen-Cong and Chen, Nian-Yi and Li, Guo-Zheng and Yang, Jie}
+{Multitask Learning Using Partial Least Squares Method}~//
+Proceedings of the Seventh International Conference on Information Fusion; International Society of Information Fusion, 2004.
+Vol.~1.
+P.~79--84.
+
+\bibitem{Varnek2012} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Varnek, Alexandre and Baskin, Igor}
+{Machine learning methods for property prediction in chemoinformatics: Quo Vadis?}~//
+Journal of Chemical Information and Modeling, 2012.
+Vol.~52.
+No.~6.
+P.~1413--1437.
+
+\bibitem{Lehky2014} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Lehky, Sidney R. and Kiani, Roozbeh and Esteky, Hossein and Tanaka, Keiji}
+{Dimensionality of object representations in monkey inferotemporal cortex}~//
+Neural computation, 2014.
+Vol.~1872.
+No.~10.
+P.~1840--1872.
+
+\bibitem{Abdi2003} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Abdi, Herv{\'{e}}}
+{Partial Least Squares (PLS) Regression}~//
+Encyclopedia for research methods for the social sciences, 2003.
+P.~792--795.
+
+\bibitem{Caruana2003} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Caruana, Rich and de Sa, Virginia R.}
+{Benefitting from the Variables that Variable Selection Discards}~//
+Journal of Machine Learning Research, 2003.
+Vol.~3.
+No.~7-8.
+P.~1245--1264.
+
+\end{thebibliography}
 
 \end{document}
