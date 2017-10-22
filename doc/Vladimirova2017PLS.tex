@@ -118,7 +118,6 @@
 \newpage
 \section{Постановка задачи прогнозирования}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\textcolor{red}{ ОБЩАЯ ПОСТАНОВКА}
 Рассмотривается сигнал $\mathbf{x} = [x_t]$,  $t = 1, \dots , n$, $x_t \in \mathbb{R}$. Необходимо спрогнозировать $r$ значений сигнала или отклика:  
 $\mathbf{y} = [y_t]$,  $t = 1, \dots , r$, $y_t \in \mathbb{R}$. 
 Прогнозом могут являться, например, $r$ последующих значений временного ряда. 
@@ -189,7 +188,8 @@ $$ {\bTheta}^{*} = \argmin_{\bTheta \in \mathbb{R}^{n \times r}} S(\bTheta | \ma
  %Обозначим $$\mathbf{z} =  {[x_{T-\tau+2}, x_{T-\tau+3} ,\dots ,x_{T}]}^{\mathsf{T}}. $$
 % Тогда прогноз для сигнала в момент $T+1$: $$x_{T+1} = \mathbf{z^{\mathsf{T}}w}.$$
 %Индуктивно, используя информацию о сигнале и уже спрогнозированные значения, с помощью авторегрессионной модели спрогнозируем значение сигнала в момент времени ${T+2}$, затем ${T+3}$ и так далее до $T+\tau$.
-\textcolor{red}{МУЛЬТИКОЛЛИНЕАРНОСТЬ}
+\textcolor{blue}{
+Одним из основных препятствий эффективного применения регрессионного анализа является мультиколлинеарность. Она связана с линейной зависимостью между признаками объектов. В результате мультиколлинеарности матрица парных коэффициентов корреляции и матрица $\bX^{\T} \bX$ становятся слабообусловленными, т.е. их определители близки к нулю. Это приводит к неустойчивости оценок коэффициентов регрессии, так как в их выражения входит обратная матрица $(\bX^{\T}\bX)^{-1}$, получение которой связано с делением на определитель матрицы $\bX^{\T}\bX$. }
 Значения \textcolor{blue}{сигнала} в соседние моменты времени являются зависимыми.
 Таким образом, наблюдается мультиколлинеарность между признаками авторегрессионной модели прогнозирования сигнала. 
 Для решения проблемы мультиколлинеарности применяются методы отбора признаков. Оптимальные параметры задачи регрессии \textcolor{blue}{$\bTheta$ настраиваются} на обучающей выборке $\mathfrak{D}_\mathcal{L}$. 
@@ -208,13 +208,49 @@ $$ {\bTheta}^{*} = \argmin_{\bTheta \in \mathbb{R}^{n \times r}} S(\bTheta | \ma
     \bX &= \bT \bP^{\T} + \bE,\\
     \bY &= \bU \bQ^{\T} + \bF,
 \end{align*}
-где $\bT \in \mathbb{R}^{m \times l},\ \bU \in \mathbb{R}^{m \times l}$~--- матрицы объектов и ответов в спроектированном пространстве, причём $\bT^{\T} \bT = \bI_{l}$; $\bP \in \mathbb{R}^{n \times l},\ \bQ \in \mathbb{R}^{r \times l}$~--- матрицы перехода из нового пространства в старое; $\bE\in \mathbb{R}^{m \times n},\ \bF \in \mathbb{R}^{m \times r}$~--- матрицы невязок. 
+где $\bT \in \mathbb{R}^{m \times l},\ \bU \in \mathbb{R}^{m \times l}$~--- матрицы объектов и ответов в спроектированном пространстве, причём $\bT^{\T} \bT = \bI_{l}$; $\bP \in \mathbb{R}^{n \times l},\ \bQ \in \mathbb{R}^{r \times l}$~--- матрицы перехода из нового пространства в старое; $\bE\in \mathbb{R}^{m \times n},\ \bF \in \mathbb{R}^{m \times r}$~--- матрицы невязок. Размеры векторов в алгоритме можно изобразить следующим образом:
+
+\tikzstyle{sensor_x}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=3em]
+\tikzstyle{sensor_t}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2em]
+\tikzstyle{sensor_p}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=3em]
+\tikzstyle{sensor_y}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2.5em]
+\tikzstyle{sensor_q}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=2.5em]
+
+\hspace{1cm}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+    \node (x) [sensor_x]  {$\bX$};
+    \node[right of = x, node distance=3em] (x_equal) {=};
+    \node[sensor_t, right of = x_equal, node distance=2.5em] (t) {$\bT$};
+    \node[right of = t, node distance=2.5em] (x_times) {$\times$};
+    \node[sensor_p, right of = x_times, node distance=2.8em] (p) {$\bP^{\T}$};
+    \node[right of = p, node distance=2.8em] (x_sum) {+};
+    \node[sensor_x, right of = x_sum, node distance=2.8em] (e) {$\bE$};
+    % \node[below of = x, node distance=3.5em] (x_size) {\footnotesize{$m\times n$}};
+    % \node[below of = t, node distance=3.5em] (t_size) {\footnotesize{$m\times l$}};
+    % \node[below of = p, node distance=2.3em] (p_size) {\footnotesize{$l\times n$}};
+    % \node[below of = e, node distance=3.5em] (e_size) {\footnotesize{$m\times n$}};
+
+    \node[below of = x, node distance=7em] (y) [sensor_y]  {$\bY$};
+    \node[below of = x_equal, node distance=7em] (y_equal) {=};
+    \node[sensor_t, below of = t, node distance=7em] (u) {$\bU$};
+    \node[below of = x_times, node distance=7em] (y_times) {$\times$};
+    \node[sensor_q, below of = p, node distance=7em] (q) {$\bQ^{\T}$};
+    \node[below of = x_sum, node distance=7em] (y_sum) {+};
+    \node[sensor_y, below of = e, node distance=7em] (f) {$\bF$};
+\end{tikzpicture}
+\caption{Размерности векторов в алгоритме PLS}
+\end{figure}
+
+
+
 
 Алгоритм регрессии PLS итеративно на каждом из $l$ шагов вычисляет по одному столбцу $\bt$, $\bu$, $\bp$, $\bq$, из которых формируются матрицы $\bT$, $\bU$, $\bP$, $\bQ$ соответственно. Предполагается, что вектора новых признаков $\bt$ и $\bu$ являются линейными комбинациями столбцов матриц $\bX$ и $\bY$ соответственно.
 
 Псевдокод метода регрессии PLS приведен в алгоритме~\ref{PLSR_pseudo}. 
 Во внутреннем цикле алгоритма вычисляются вектора $\bw$ и $\bc$. 
-Правила обновления векторов $\bw$, $\bc$ совпадают с итерацией Power method [{\color{red} ссылка}]. 
+Правила обновления векторов $\bw$, $\bc$ совпадают с итерацией Power method \textcolor{red}{\cite{Mises1929}}. 
 Вектора $\bw$, $\bc$ являются собственными векторами матриц $\bX^{\T} \bY \bY^{\T} \bX$ и $\bY^{\T} \bX \bX^{\T} \bY$ соответственно.
 \begin{align*}
 	\bw \varpropto \bX^{\T} \underbrace{\bY \overbrace{\bY^{\T} \underbrace{\bX \bw}_{\bt}}^{\bc}}_{\bu}
@@ -264,42 +300,6 @@ $$
 \end{algorithmic}
 \end{algorithm}
 \end{center}
-
-
-Размеры векторов в алгоритме можно изобразить следующим образом:
-
-\tikzstyle{sensor_x}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=3em]
-\tikzstyle{sensor_t}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2em]
-\tikzstyle{sensor_p}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=3em]
-\tikzstyle{sensor_y}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2.5em]
-\tikzstyle{sensor_q}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=2.5em]
-
-\hspace{1cm}
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-    \node (x) [sensor_x]  {$\bX$};
-    \node[right of = x, node distance=3em] (x_equal) {=};
-    \node[sensor_t, right of = x_equal, node distance=2.5em] (t) {$\bT$};
-    \node[right of = t, node distance=2.5em] (x_times) {$\times$};
-    \node[sensor_p, right of = x_times, node distance=2.8em] (p) {$\bP^{\T}$};
-    \node[right of = p, node distance=2.8em] (x_sum) {+};
-    \node[sensor_x, right of = x_sum, node distance=2.8em] (e) {$\bE$};
-    % \node[below of = x, node distance=3.5em] (x_size) {\footnotesize{$m\times n$}};
-    % \node[below of = t, node distance=3.5em] (t_size) {\footnotesize{$m\times l$}};
-    % \node[below of = p, node distance=2.3em] (p_size) {\footnotesize{$l\times n$}};
-    % \node[below of = e, node distance=3.5em] (e_size) {\footnotesize{$m\times n$}};
-
-    \node[below of = x, node distance=7em] (y) [sensor_y]  {$\bY$};
-    \node[below of = x_equal, node distance=7em] (y_equal) {=};
-    \node[sensor_t, below of = t, node distance=7em] (u) {$\bU$};
-    \node[below of = x_times, node distance=7em] (y_times) {$\times$};
-    \node[sensor_q, below of = p, node distance=7em] (q) {$\bQ^{\T}$};
-    \node[below of = x_sum, node distance=7em] (y_sum) {+};
-    \node[sensor_y, below of = e, node distance=7em] (f) {$\bF$};
-\end{tikzpicture}
-\caption{Размерности векторов в алгоритме PLS}
-\end{figure}
 
 
 
@@ -466,17 +466,23 @@ $$
 
     Предлагается подход для обновления весов $\bv$, основаный на линеаризации функции преобразования. Разложим (\ref{transf_y}) в ряд Тейлора до второго порядка: 
     $$
-        \breve \by \approx \breve \by_{0} + \frac{\partial g}{\partial \bv} \Big|_{0} \Delta \bv,
+        \breve \bu \approx \breve \bu_{0} + \frac{\partial \bu}{\partial \bv} \Delta \bv,
     $$
-    где $\breve \by_{0}$~--- это значение функции $g$ при известном значении переменной $\by$.
-    Для вычисления $\Delta \bv$ предложены следующие шаги. Рассматривается разница $\breve \by - \breve \by_{0} = \frac {\partial g_y}{\partial \bv_y} \Big|_{0} \Delta \bv$. Определется рассогласование $\be$
+    где $\breve \bu_{0}$~--- это значение функции $g$ при известном значении переменной $\bu$.
+    Для вычисления $\Delta \bv$ предложены следующие шаги. Рассматривается разница $\breve \bu - \breve \bu_{0} = \frac {\partial \bu}{\partial \bv} \Delta \bv$. Определется рассогласование $\be$
     $$
-        \be = \breve \by - \breve \by_{0} = \frac {\partial g}{\partial \bv} \Big|_{0} \Delta \bv = \bJ_y \Delta \bv,
+        \be = \breve \bu - \breve \bu_{0} = \frac {\partial \bu}{\partial \bv} \Delta \bv = \bJ_u \Delta \bv,
     $$
-    где матрица $\bJ_y$ состоит из частных производных $\left\{\frac {\partial g}{\partial v_i}\Big|_{0} \right\}_{i=1}^N$, вычисленных при известном значении переменной $\by$. Далее $\Delta \bv$ вычисляется решением задачи регрессии рассогласования $\be$ так, что 
+    где матрица $\bJ_u$ состоит из частных производных $\left\{\frac {\partial \bu}{\partial v_i} \right\}_{i=1}^N$, вычисленных при известном значении переменной $\bu$. Таким образом, 
+    \begin{align*}
+        \bJ_u &= \frac {\partial \bu}{\partial \bv} = \frac {\partial (\tilde \bY \bc)}{\partial \bv}  = \frac {\partial \left(\tilde \bY \tilde \bY^{\T}\bt \right)}{\partial \bv}  \frac1{(\bt^{\T}\bt)} = \frac {\partial \left(f (\bY, \bv) f^{\T} (\bY, \bv) \bt \right)}{\partial \bv}\frac1{(\bt^{\T}\bt)} \\
+        &= \frac {\partial \left(f (\bY, \bv) \right)}{\partial \bv}  \frac{f^{\T} (\bY, \bv) \bt }{(\bt^{\T}\bt)} + f (\bY, \bv) \frac {\partial \left(f^{\T} (\bY, \bv) \bt \right)}{\partial \bv} \frac1{(\bt^{\T}\bt)}.
+    \end{align*}
+
+    Далее $\Delta \bv$ вычисляется решением задачи регрессии рассогласования $\be$ так, что 
   \begin{equation}
   \label{delta_v}
-    \Delta \bv  = (\bJ_y^{\T} \bJ_y)^{-1} \bJ_y^{\T} \be.
+    \Delta \bv  = (\bJ_u^{\T} \bJ_u)^{-1} \bJ_u^{\T} \be.
   \end{equation}
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -489,7 +495,7 @@ $$
     \item криволинейное с вектором параметров $\bv$ (таб.~\ref{table_functions})
     \begin{equation}
     \label{transf_y}
-        \breve \bX = g (\bX, \bv),
+        \breve \bX = g (\bX, \bv_x),
     \end{equation}
     \item нелинейное непараметрическое преобразование
     \begin{equation*}
@@ -497,7 +503,7 @@ $$
     \end{equation*}
     \item суперпозиция преобразований 
     \begin{equation*}
-        \tilde \bX = h (\breve \bX) = h( g( \bX, \bv)) = f(\bX, \bv).
+        \tilde \bX = h (\breve \bX) = h( g( \bX, \bv_x)) = f(\bX, \bv_x).
     \end{equation*}
     \end{itemize}
 
@@ -508,7 +514,7 @@ $$
     \vspace{-0.5cm}
 \begin{center}
 \begin{algorithm}[H]
-\caption{Алгоритм cnlPLSR}
+\caption{Алгоритм cnlPLSR с преобразованием пространства ответов}
     \label{cnlPLSR_pseudo}
 \begin{algorithmic}[1]
 \REQUIRE $\bX, \bY, l$;
@@ -519,7 +525,7 @@ $$
   \REPEAT
     \STATE $\bw := \bX^{\T} \bu_0 / (\bu_0^{\T} \bu_0)$
     \STATE нормировать $\bw$: $\| \bw \| = 1$
-    \STATE $\mathbf{t} := \bX \bw$
+    \STATE $\bt := \bX \bw$
     \STATE $\tilde \bY = f(\bY, \bv)$
     \STATE $\bc := \tilde \bY^{\T} \bt / (\bt^{\T} \bt)$
     \STATE нормировать $\bc$: $\| \bc \| = 1$
@@ -529,6 +535,43 @@ $$
     \STATE $\Delta \bv = (\bJ^{\T} \bJ)^{-1} \bJ^{\T} \be$
     \STATE $\bv := \bv + \Delta \bv,\ \|\bv\| = 1$
     \STATE $\bu_0 := \bu$
+  \UNTIL{$\bt$ не перестанет меняться}
+  \STATE сохранить $\bt$, $\bu$, $\bc$
+  \STATE вычислить $\tilde \bY$
+  \STATE $\bp := \bX^{\T}\bt/(\bt^{\T}\bt),\ \bq := \tilde \bY^{\T}\bu/(\bu^{\T}\bu)$
+  \STATE регрессия ($\bu$ на $\bt$): $\beta := \bu^{\T} \bt / (\bt^{\T} \bt)$ 
+  \STATE $\bX := \bX - \bt\bt^{\T}\bX/(\bt^{\T}\bt)$
+  \STATE $\tilde{\bY} := \tilde \bY - \beta\bt\bc^{\T}$
+  \STATE вычислить $\bY$ с помощью обратного преобразования $f^{-1}(\tilde \bY, \bv)$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+\end{center}
+
+\begin{center}
+\begin{algorithm}[H]
+\caption{Алгоритм cnlPLSR с преобразованием пространства объектов}
+    \label{cnlPLSR_pseudo_x}
+\begin{algorithmic}[1]
+\REQUIRE $\bX, \bY, l$;
+\ENSURE $\bT, \bU, \bP, \bQ$;
+\STATE инициализировать $\bv_x$
+\STATE определить $\bt_0$ \textcolor{red}{КАК}
+\STATE определить $\bu$ как вектор матрицы $\bY$
+\FOR{$i=1,\dots, l$}
+  \REPEAT
+    \STATE $\tilde \bX := f(\bX, \bv_x)$
+    \STATE $\bw := \tilde \bX^{\T} \bu / (\bu^{\T} \bu)$
+    \STATE нормировать $\bw$: $\| \bw \| = 1$
+    \STATE $\bt := \tilde \bX \bw$
+    \STATE $\bc := \bY^{\T} \bt / (\bt^{\T} \bt)$
+    \STATE нормировать $\bc$: $\| \bc \| = 1$
+    \STATE $\bu := \bY \bc$
+    \STATE \textcolor{red}{?} $\be := \bt - \bt_0$
+    \STATE \textcolor{red}{?} $\bJ_t := \partial \bt / \partial \bv_x$
+    \STATE \textcolor{red}{?} $\Delta \bv_x = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} \be$
+    \STATE $\bv_x := \bv_x + \Delta \bv_x,\ \|\bv_x\| = 1$
+    \STATE \textcolor{red}{?} $\bt_0 := \bt$
   \UNTIL{$\bt$ не перестанет меняться}
   \STATE сохранить $\bt$, $\bu$, $\bc$
   \STATE вычислить $\tilde \bY$
@@ -829,6 +872,15 @@ Journal of Machine Learning Research, 2003.
 Vol.~3.
 No.~7-8.
 P.~1245--1264.
+
+\bibitem{Mises1929} %1
+%\selectlanguageifdefined{english}
+\BibAuthor{Mises R. V., Pollaczek‐Geiringer H. }
+{Praktische Verfahren der Gleichungsauflösung}~//
+ZAMM‐Journal of Applied Mathematics and Mechanics/Zeitschrift für Angewandte Mathematik und Mechanik, 1929.
+Vol.~9.
+No.~1.
+P.~58--77.
 
 \end{thebibliography}
 
