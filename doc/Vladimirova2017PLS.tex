@@ -474,8 +474,9 @@ $$
     $$
     где матрица $\bJ_u$ состоит из частных производных $\left\{\frac {\partial \bu}{\partial v_i} \right\}_{i=1}^N$, вычисленных при известном значении переменной $\bu$. Таким образом, 
     \begin{align*}
-        \bJ_u &= \frac {\partial \bu}{\partial \bv} = \frac {\partial (\tilde \bY \bc)}{\partial \bv}  = \frac {\partial \left(\tilde \bY \tilde \bY^{\T}\bt \right)}{\partial \bv}  \frac1{(\bt^{\T}\bt)} = \frac {\partial \left(f (\bY, \bv) f^{\T} (\bY, \bv) \bt \right)}{\partial \bv}\frac1{(\bt^{\T}\bt)} \\
-        &= \frac {\partial \left(f (\bY, \bv) \right)}{\partial \bv}  \frac{f^{\T} (\bY, \bv) \bt }{(\bt^{\T}\bt)} + f (\bY, \bv) \frac {\partial \left(f^{\T} (\bY, \bv) \bt \right)}{\partial \bv} \frac1{(\bt^{\T}\bt)}.
+        \bJ_u &= \frac {\partial \bu}{\partial \bv} = \frac {\partial (\tilde \bY \bc)}{\partial \bv}  = \frac {\partial \left(\tilde \bY \tilde \bY^{\T}\bt \right)}{\partial \bv}  \frac1{(\bt^{\T}\bt)} = \frac {\partial \left(f (\bY, \bv) f^{\T} (\bY, \bv) \right)}{\partial \bv}\frac{\bt }{(\bt^{\T}\bt)} \\
+        &= \frac {\partial \left(f (\bY, \bv) \right)}{\partial \bv}  \frac{f^{\T} (\bY, \bv) \bt }{(\bt^{\T}\bt)} + f (\bY, \bv) \frac {\partial \left(f^{\T} (\bY, \bv) \right)}{\partial \bv} \frac{\bt }{(\bt^{\T}\bt)} \\
+        &= \left( \frac {\partial \left(f (\bY, \bv) \right)}{\partial \bv}  f^{\T} (\bY, \bv) + f (\bY, \bv) \frac {\partial \left(f^{\T} (\bY, \bv) \right)}{\partial \bv}\right) \frac{\bt }{(\bt^{\T}\bt)}.
     \end{align*}
 
     Далее $\Delta \bv$ вычисляется решением задачи регрессии рассогласования $\be$ так, что 
