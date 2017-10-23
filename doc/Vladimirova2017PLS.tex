@@ -115,7 +115,7 @@
 \textcolor{red}{ Текст про кортиграмму}
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
+
 \section{Постановка задачи прогнозирования}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Рассмотривается сигнал $\mathbf{x} = [x_t]$,  $t = 1, \dots , n$, $x_t \in \mathbb{R}$. Необходимо спрогнозировать $r$ значений сигнала или отклика:  
@@ -279,19 +279,23 @@ $$
 \begin{algorithmic}[1]
 \REQUIRE $\bX, \bY, l$;
 \ENSURE $\bT, \bU, \bP, \bQ$;
-\STATE инициализировать $\bu := \by_1$ (вектор матрицы $\bY$)
+\STATE инициализировать $\bu$ (первый столбец матрицы $\bY$)
+\STATE $\bT := \bU := \bP := \bQ := \emptyset$
 \FOR{$i=1,\dots, l$}
   \REPEAT
-    \STATE $\bw := \bX^{\T} \bu / (\bu^{\T} \bu)$
-    \STATE нормировать $\bw$: $\| \bw \| = 1$
+    \STATE $\bw := \bX^{\T} \bu / (\bu^{\T} \bu); \quad \bw: = \frac{\bw}{\| \bw \|}$
     \STATE $\mathbf{t} := \bX \bw$
-    \STATE $\bc := \bY^{\T} \bt / (\bt^{\T} \bt)$
-    \STATE нормировать $\bc$:  $\| \bc \| = 1$
+    \STATE $\bc := \bY^{\T} \bt / (\bt^{\T} \bt); \quad \bc: = \frac{\bc}{\| \bc \|}$
     \STATE $\bu := \bY \bc$
-  \UNTIL{$\bt$ не перестанет меняться}
-  \STATE сохранить $\bt$, $\bu$, $\bc$
+  \UNTIL{$\bt$ не стабилизируется}
+  \vspace{0.1cm}
+  \STATE $\bT := \text{concat}[\bT; \bt]$; $\bU := \text{concat}[\bU; \bu]$
+  \vspace{0.1cm}
   \STATE $\bp := \bX^{\T}\bt/(\bt^{\T}\bt),\ \bq := \bY^{\T}\bu/(\bu^{\T}\bu)$
-  \STATE регрессия ($\bu$ на $\bt$): $\beta := \bu^{\T} \bt / (\bt^{\T} \bt)$ 
+  \vspace{0.1cm}
+  \STATE $\bP:= \text{concat}[\bP; \bp]$; $\bQ := \text{concat}[\bQ; \bq]$
+  \vspace{0.1cm}
+  \STATE регрессия $\bu$ на $\bt$: $\beta := \bu^{\T} \bt / (\bt^{\T} \bt)$ 
   \STATE $\bX := \bX - \bt \bp^{\T}$
   \STATE $\bY := \bY - \beta\bt\bq^{\T}$ 
 \ENDFOR
@@ -333,6 +337,7 @@ $$
 \section{Модификация метода частных наименьших квадратов (cnlPLS)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Предлагается провести модификацию алгоритма PLS: совершить криволинейное и нелинейное преобразования пространства целевой переменной  и независимой переменной для учета мультиколлинеарности между значениями сигнала в различные моменты времени. Схема модифицированного алгоритма представлена на рис.~\ref{scheme_cnlPLS}. 
+После применения к исходным матрицам $\bX$ и $\bY$ нелинейных преобразований $f_x$ и $f_y$ соответственно используется линейный алгоритм метода частных наименьших квадратов.
 
 %FIGURE 2
 
@@ -341,7 +346,6 @@ $$
 \tikzstyle{sensor_y}=[draw, fill=blue!0, text width=2.7em, 
     text centered, minimum height=5em]
 \begin{figure}[H]
-\label{scheme_cnlPLS}
 \centering
 {\footnotesize
 \def\blockdist{2.3}
@@ -349,6 +353,7 @@ $$
 \vspace{1cm}
 \hspace{1cm}
 \begin{tikzpicture}
+
     \node (x) [sensor_x]  {$\bX$};
     \path (x.south)+(0,-2) node (tilde_x) [sensor_x] {$\tilde \bX$};
     \path (x.east)+(4,0) node (y) [sensor_y] {$\bY$};
@@ -380,6 +385,7 @@ $$
 \end{tikzpicture}
 }
 \caption{Схема модифицированного метода частных наименьших квадратов}
+\label{scheme_cnlPLS}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -391,23 +397,23 @@ $$
     \item криволинейное параметрическое преобразование (примеры преобразований представлены в табл.~\ref{table_functions})
     \begin{equation}
     \label{transf_y}
-        \breve \bY = g (\bY, \bv),
+        \breve \bY = g_y (\bY, \bv_y),
     \end{equation}
     \item нелинейное непараметрическое преобразование
     \begin{equation*}
-        \hat \bY = h (\bY),
+        \hat \bY = h_y (\bY),
     \end{equation*}
     \item суперпозиция преобразований   $
     \begin{diagram}
     \node{\bY}
-    \arrow{e,t}{g(\bY, \bv)}
+    \arrow{e,t}{g_y(\bY, \bv_y)}
     \node{\breve \bY}
-    \arrow{e,t}{h(\breve \bY)}
+    \arrow{e,t}{h_y(\breve \bY)}
     \node{\tilde \bY}
     \end{diagram}
     $
     \begin{equation*}
-        \tilde \bY = h (\breve \bY) = h( g( \bY, \bv)) = f(\bY, \bv).
+        \tilde \bY = h_y (\breve \bY) = h_y( g_y( \bY, \bv_y)) = f_y(\bY, \bv).
     \end{equation*}
 
     \end{itemize}
@@ -442,11 +448,11 @@ $$
 \begin{itemize}
     \item $g: \mathbb{R} \to \mathbb{R}$,
     \item $g(0) = 0$,
-    \item $g$ дифференцируется по параметрам $\bv$,
+    \item $g$ дифференцируется по параметрам $\bv_y$,
     \item существует $g^{-1}$.
 \end{itemize}
 
-\begin{table}[]
+\begin{table}[h]
 \centering
 \begin{tabular}{|l|l|l|}
 \hline
@@ -462,28 +468,29 @@ $$
 \label{table_functions}
 \end{table}
 
-    Для обучения параметров $\bv$ используется градиентный метод. 
-    Предлагается подход для обновления весов $\bv$, основаный на линеаризации функции преобразования. Разложим (\ref{transf_y}) в ряд Тейлора до второго порядка: 
-    $$
-        \breve \bu \approx \breve \bu_{0} + \frac{\partial \bu}{\partial \bv} \Delta \bv.
-    $$
+Для обучения параметров $\bv_y$ используется градиентный метод. 
+Предлагается подход для обновления весов $\bv_y$, основаный на линеаризации функции преобразования. Разложим (\ref{transf_y}) в ряд Тейлора до второго порядка: 
+$$
+    \bu \approx \bu_{0} + \frac{\partial \bu}{\partial \bv_y} \Delta \bv_y.
+$$
     
-    Для вычисления $\Delta \bv$ предложены следующие шаги. Рассматривается разница $\breve \bu - \breve \bu_{0} = \frac {\partial \bu}{\partial \bv} \Delta \bv$. Определется рассогласование $\be$
-    $$
-        \be = \breve \bu - \breve \bu_{0} = \frac {\partial \bu}{\partial \bv} \Delta \bv = \bJ_u \Delta \bv,
-    $$
-    где матрица $\bJ_u$ состоит из частных производных $\left\{\frac {\partial \bu}{\partial v_i} \right\}_{i=1}^N$, вычисленных при известном значении переменной $\bu$. Таким образом, 
-    \begin{align*}
-        \bJ_u &= \frac {\partial \bu}{\partial \bv} = \frac {\partial (\tilde \bY \bc)}{\partial \bv}  = \frac {\partial \left(\tilde \bY \tilde \bY^{\T}\bt \right)}{\partial \bv}  \frac1{(\bt^{\T}\bt)} = \frac {\partial \left(f (\bY, \bv) f^{\T} (\bY, \bv) \right)}{\partial \bv}\frac{\bt }{(\bt^{\T}\bt)} \\
-        &= \frac {\partial \left(f (\bY, \bv) \right)}{\partial \bv}  \frac{f^{\T} (\bY, \bv) \bt }{(\bt^{\T}\bt)} + f (\bY, \bv) \frac {\partial \left(f^{\T} (\bY, \bv) \right)}{\partial \bv} \frac{\bt }{(\bt^{\T}\bt)} \\
-        &= \left( \frac {\partial \left(f (\bY, \bv) \right)}{\partial \bv}  f^{\T} (\bY, \bv) + f (\bY, \bv) \frac {\partial \left(f^{\T} (\bY, \bv) \right)}{\partial \bv}\right) \frac{\bt }{(\bt^{\T}\bt)}.
-    \end{align*}
+Для вычисления $\Delta \bv_y$ предложены следующие шаги. Рассматривается разница $\bu - \bu_{0} = \frac {\partial \bu}{\partial \bv_y} \Delta \bv_y$. Определется рассогласование
+$$
+    \bu - \bu_{0} \approx \frac {\partial \bu}{\partial \bv_y} \Delta \bv_y = \bJ_u \Delta \bv_y,
+$$
+где матрица $\bJ_u$ состоит из частных производных $\left\{\frac {\partial \bu}{\partial \bv_y} \right\}$, вычисленных при известном значении переменной $\bu$: 
+\[
+    \bJ_u = \frac {\partial \bu}{\partial \bv_y} 
+    = \frac {\partial }{\partial \bv_y} (\tilde \bY \bc)
+    = \frac1{(\bt^{\T}\bt)} \frac {\partial }{\partial \bv_y} \left(\tilde \bY \tilde \bY^{\T}\bt \right) 
+    =\frac{2}{(\bt^{\T}\bt)} \tilde \bY \cdot \frac {\partial}{\partial \bv_y}  \left(\tilde \bY^{\T} \right) \bt.
+\]
 
-    Далее $\Delta \bv$ вычисляется решением задачи регрессии рассогласования $\be$ так, что 
-  \begin{equation}
-  \label{delta_v}
-    \Delta \bv  = (\bJ_u^{\T} \bJ_u)^{-1} \bJ_u^{\T} \be.
-  \end{equation}
+Правило обновления для вектора $\Delta \bv$ является решением задачи регрессии рассогласования
+\begin{equation}
+\label{delta_v}
+\Delta \bv_y  = (\bJ_u^{\T} \bJ_u)^{-1} \bJ_u^{\T} (\bu - \bu_0).
+\end{equation}
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Преобразование независимой переменной}
@@ -492,94 +499,78 @@ $$
 
     Рассмотрим преобразования $\bX$
     \begin{itemize} 
-    \item криволинейное с вектором параметров $\bv$ (таб.~\ref{table_functions})
+    \item криволинейное с вектором параметров $\bv$ (табл.~\ref{table_functions})
     \begin{equation}
     \label{transf_y}
-        \breve \bX = g (\bX, \bv_x),
+        \breve \bX = g_x (\bX, \bv_x),
     \end{equation}
     \item нелинейное непараметрическое преобразование
     \begin{equation*}
-        \hat \bX = h (\bX),
+        \hat \bX = h_x (\bX),
     \end{equation*}
     \item суперпозиция преобразований 
     \begin{equation*}
-        \tilde \bX = h (\breve \bX) = h( g( \bX, \bv_x)) = f(\bX, \bv_x).
+        \tilde \bX = h_x (\breve \bX) = h_x( g_x( \bX, \bv_x)) = f_x(\bX, \bv_x).
     \end{equation*}
     \end{itemize}
+
+Аналогично преобразованию зависимой переменной сводим задачу обновления вектора параметров $\bv_x$ к задаче линейной регрессии:
+
+\begin{align*}
+	\bt - \bt_0 \approx \frac {\partial \bt}{\partial \bv_x} \Delta \bv_x = \bJ_t \Delta \bv_x \\
+	\Delta \bv_x  = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} (\bt - \bt_0).
+\end{align*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Алгоритм cnlPLSR}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    В данном разделе представлен модифицированный метод PLSR, содержащий шаги преобразования целевой переменной. Аналогично методу PLSR (алгоритм~\ref{PLSR_pseudo}), алгоритм \ref{cnlPLSR_pseudo} начинается с инициализации вектора $\bu$, а обновления весов преобразования считается с помощью рассогласования $\be$ для вектора $\bu$, вычисленного в цикле и на предыдущей итерации.
-    \vspace{-0.5cm}
-\begin{center}
-\begin{algorithm}[H]
-\caption{Алгоритм cnlPLSR с преобразованием пространства ответов}
-    \label{cnlPLSR_pseudo}
-\begin{algorithmic}[1]
-\REQUIRE $\bX, \bY, l$;
-\ENSURE $\bT, \bU, \bP, \bQ$;
-\STATE инициализировать $\bv$
-\STATE определить $\bu_0$ как вектор преобразования $f(\bY, \bv)$
-\FOR{$i=1,\dots, l$}
-  \REPEAT
-    \STATE $\bw := \bX^{\T} \bu_0 / (\bu_0^{\T} \bu_0)$
-    \STATE нормировать $\bw$: $\| \bw \| = 1$
-    \STATE $\bt := \bX \bw$
-    \STATE $\tilde \bY = f(\bY, \bv)$
-    \STATE $\bc := \tilde \bY^{\T} \bt / (\bt^{\T} \bt)$
-    \STATE нормировать $\bc$: $\| \bc \| = 1$
-    \STATE $\bu := \tilde \bY \bc$
-    \STATE $\be := \bu - \bu_0$
-    \STATE $\bJ := \partial \bu / \partial \bv$
-    \STATE $\Delta \bv = (\bJ^{\T} \bJ)^{-1} \bJ^{\T} \be$
-    \STATE $\bv := \bv + \Delta \bv,\ \|\bv\| = 1$
-    \STATE $\bu_0 := \bu$
-  \UNTIL{$\bt$ не перестанет меняться}
-  \STATE сохранить $\bt$, $\bu$, $\bc$
-  \STATE вычислить $\tilde \bY$
-  \STATE $\bp := \bX^{\T}\bt/(\bt^{\T}\bt),\ \bq := \tilde \bY^{\T}\bu/(\bu^{\T}\bu)$
-  \STATE регрессия ($\bu$ на $\bt$): $\beta := \bu^{\T} \bt / (\bt^{\T} \bt)$ 
-  \STATE $\bX := \bX - \bt\bt^{\T}\bX/(\bt^{\T}\bt)$
-  \STATE $\tilde{\bY} := \tilde \bY - \beta\bt\bc^{\T}$
-  \STATE вычислить $\bY$ с помощью обратного преобразования $f^{-1}(\tilde \bY, \bv)$
-\ENDFOR
-\end{algorithmic}
-\end{algorithm}
-\end{center}
+В данном разделе представлен модифицированный метод PLSR, содержащий шаги преобразования целевой переменной. Аналогично методу PLSR (алгоритм~\ref{PLSR_pseudo}), алгоритм \ref{cnlPLSR_pseudo} начинается с инициализации вектора $\bu$, а обновления весов преобразования считается с помощью рассогласования $\be$ для вектора $\bu$, вычисленного в цикле и на предыдущей итерации.
+\vspace{-0.5cm}
 
 \begin{center}
-\begin{algorithm}[H]
-\caption{Алгоритм cnlPLSR с преобразованием пространства объектов}
+\begin{algorithm}[h]
+\caption{Алгоритм cnlPLSR с преобразованием пространства объектов 2}
     \label{cnlPLSR_pseudo_x}
 \begin{algorithmic}[1]
 \REQUIRE $\bX, \bY, l$;
-\ENSURE $\bT, \bU, \bP, \bQ$;
-\STATE инициализировать $\bv_x$
-\STATE определить $\bt_0$ \textcolor{red}{КАК}
-\STATE определить $\bu$ как вектор матрицы $\bY$
+\ENSURE $\bT, \bU, \bP, \bQ, \bv_x, \bv_y$;
+\STATE инициализировать $\bv_x$ и $\bv_y$
+\STATE инициализировать $\bt_0$ (первый столбец матрицы $\bX$)
+\STATE инициализировать $\bu_0$ (первый столбец матрицы $\bY$)
+\STATE $\bT := \bU := \bP := \bQ := \emptyset$
 \FOR{$i=1,\dots, l$}
   \REPEAT
-    \STATE $\tilde \bX := f(\bX, \bv_x)$
-    \STATE $\bw := \tilde \bX^{\T} \bu / (\bu^{\T} \bu)$
-    \STATE нормировать $\bw$: $\| \bw \| = 1$
+    \STATE $\tilde \bX := f_x(\bX, \bv_x)$
+    \vspace{0.1cm}
+    \STATE $\bw := \tilde \bX^{\T} \bu / (\bu^{\T} \bu); \quad \bw: = \frac{\bw}{\|\bw \|}$
     \STATE $\bt := \tilde \bX \bw$
-    \STATE $\bc := \bY^{\T} \bt / (\bt^{\T} \bt)$
-    \STATE нормировать $\bc$: $\| \bc \| = 1$
-    \STATE $\bu := \bY \bc$
-    \STATE \textcolor{red}{?} $\be := \bt - \bt_0$
-    \STATE \textcolor{red}{?} $\bJ_t := \partial \bt / \partial \bv_x$
-    \STATE \textcolor{red}{?} $\Delta \bv_x = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} \be$
+    \vspace{0.1cm}
+    \STATE $\Delta \bv_x = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} (\bt - \bt_0)$, где $\bJ_t := \frac{\partial \bt}{\partial \bv_x}$
+    \vspace{0.1cm}
     \STATE $\bv_x := \bv_x + \Delta \bv_x,\ \|\bv_x\| = 1$
-    \STATE \textcolor{red}{?} $\bt_0 := \bt$
-  \UNTIL{$\bt$ не перестанет меняться}
-  \STATE сохранить $\bt$, $\bu$, $\bc$
-  \STATE вычислить $\tilde \bY$
-  \STATE $\bp := \bX^{\T}\bt/(\bt^{\T}\bt),\ \bq := \tilde \bY^{\T}\bu/(\bu^{\T}\bu)$
-  \STATE регрессия ($\bu$ на $\bt$): $\beta := \bu^{\T} \bt / (\bt^{\T} \bt)$ 
-  \STATE $\bX := \bX - \bt\bt^{\T}\bX/(\bt^{\T}\bt)$
-  \STATE $\tilde{\bY} := \tilde \bY - \beta\bt\bc^{\T}$
-  \STATE вычислить $\bY$ с помощью обратного преобразования $f^{-1}(\tilde \bY, \bv)$
+    \vspace{0.1cm}
+    \STATE $\bc := \tilde \bY^{\T} \bt / (\bt^{\T} \bt); \quad \bc: = \frac{\bc}{\| \bc \|}$ 
+    \STATE $\bu := \tilde \bY \bc$
+    \vspace{0.1cm}
+    \STATE $\Delta \bv_y = (\bJ_u^{\T} \bJ_u)^{-1} \bJ_u^{\T} (\bu - \bu_0)$, где $\bJ_u := \frac{\partial \bu}{\partial \bv_y}$
+    \vspace{0.1cm}
+    \STATE $\bv_y := \bv_y + \Delta \bv_y,\ \|\bv_y\| = 1$
+    \STATE $\bt_0 := \bt$, $\bu_0 = \bu$
+  \UNTIL{$\bt$ стабилизируется}
+   \vspace{0.1cm}
+ \STATE $\bT := \text{concat}[\bT; \bt]$; $\bU := \text{concat}[\bU; \bu]$
+ \vspace{0.1cm}
+ \STATE $\bp := \tilde \bX^{\T}\bt/(\bt^{\T}\bt),\ \bq := \tilde \bY^{\T}\bu/(\bu^{\T}\bu)$
+ \vspace{0.1cm}
+ \STATE $\bP:= \text{concat}[\bP; \bp]$; $\bQ := \text{concat}[\bQ; \bq]$
+ \vspace{0.1cm}
+ \STATE регрессия $\bu$ на $\bt$: $\beta := \bu^{\T} \bt / (\bt^{\T} \bt)$ 
+ \vspace{0.1cm}
+ \STATE $\tilde \bX := \tilde  \bX - \bt \bp^{\T}$
+ \vspace{0.1cm}
+ \STATE $\tilde \bY := \tilde  \bY - \beta\bt\bq^{\T}$ 
+ \vspace{0.1cm}
+  \STATE $\bX = f_x^{-1}(\tilde \bX, \bv_x)$; $\bY = f_y^{-1}(\tilde \bY, \bv_y)$
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
