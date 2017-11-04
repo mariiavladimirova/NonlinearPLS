@@ -535,28 +535,29 @@ $$
 \REQUIRE $\bX, \bY, l$;
 \ENSURE $\bT, \bU, \bP, \bQ, \bv_x, \bv_y$;
 \STATE инициализировать $\bv_x$ и $\bv_y$
-\STATE инициализировать $\bt_0$ (первый столбец матрицы $\bX$)
-\STATE инициализировать $\bu_0$ (первый столбец матрицы $\bY$)
 \STATE $\bT := \bU := \bP := \bQ := \emptyset$
 \FOR{$i=1,\dots, l$}
+\STATE инициализировать $\bt$ (первый столбец матрицы $\bX$)
+\STATE инициализировать $\bu$ (первый столбец матрицы $\bY$)
   \REPEAT
-    \STATE $\tilde \bX := f_x(\bX, \bv_x)$
+  \STATE $\bt_0 := \bt$, $\bu_0 = \bu$
+  \vspace{0.1cm}
+    \STATE $\tilde \bX := f_x(\bX, \bv_x); \quad \tilde \bY = f_y(\bY, \bv_y)$
     \vspace{0.1cm}
     \STATE $\bw := \tilde \bX^{\T} \bu / (\bu^{\T} \bu); \quad \bw: = \frac{\bw}{\|\bw \|}$
     \STATE $\bt := \tilde \bX \bw$
     \vspace{0.1cm}
     \STATE $\Delta \bv_x = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} (\bt - \bt_0)$, где $\bJ_t := \frac{\partial \bt}{\partial \bv_x}$
     \vspace{0.1cm}
-    \STATE $\bv_x := \bv_x + \Delta \bv_x,\ \|\bv_x\| = 1$
+    \STATE $\bv_x := \bv_x + \Delta \bv_x$
     \vspace{0.1cm}
     \STATE $\bc := \tilde \bY^{\T} \bt / (\bt^{\T} \bt); \quad \bc: = \frac{\bc}{\| \bc \|}$ 
     \STATE $\bu := \tilde \bY \bc$
     \vspace{0.1cm}
     \STATE $\Delta \bv_y = (\bJ_u^{\T} \bJ_u)^{-1} \bJ_u^{\T} (\bu - \bu_0)$, где $\bJ_u := \frac{\partial \bu}{\partial \bv_y}$
     \vspace{0.1cm}
-    \STATE $\bv_y := \bv_y + \Delta \bv_y,\ \|\bv_y\| = 1$
-    \STATE $\bt_0 := \bt$, $\bu_0 = \bu$
-  \UNTIL{$\bt$ стабилизируется}
+    \STATE $\bv_y := \bv_y + \Delta \bv_y$
+  \UNTIL{$\bt$ не стабилизируется}
    \vspace{0.1cm}
  \STATE $\bT := \text{concat}[\bT; \bt]$; $\bU := \text{concat}[\bU; \bu]$
  \vspace{0.1cm}
