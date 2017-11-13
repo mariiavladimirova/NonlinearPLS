@@ -249,10 +249,18 @@ $$ {\bTheta}^{*} = \argmin_{\bTheta \in \mathbb{R}^{n \times r}} S(\bTheta | \ma
 Псевдокод метода регрессии PLS приведен в алгоритме~\ref{PLSR_pseudo}. 
 Во внутреннем цикле алгоритма вычисляются вектора $\bw$ и $\bc$. 
 Правила обновления векторов $\bw$, $\bc$ совпадают с итерацией Power method \cite{Mises1929}. 
-Вектора $\bw$, $\bc$ являются собственными векторами матриц $\bX^{\T} \bY \bY^{\T} \bX$ и $\bY^{\T} \bX \bX^{\T} \bY$ соответственно.
-\begin{align*}
-	\bw \varpropto \bX^{\T} \underbrace{\bY \overbrace{\bY^{\T} \underbrace{\bX \bw}_{\bt}}^{\bc}}_{\bu}
-\end{align*}
+Вектора $\bw$, $\bc$ являются собственными векторами матриц $\bX^{\T} \bY \bY^{\T} \bX$ и $\bY^{\T} \bX \bX^{\T} \bY$ соответственно
+% \begin{align*}
+% 	\bw \varpropto \bX^{\T} \underbrace{\bY \overbrace{\bY^{\T} \underbrace{\bX \bw}_{\bt}}^{\bc}}_{\bu}
+% \end{align*}
+\begin{equation*}
+    \bw \varpropto \bX^{\T} \bu = \bX^{\T} \bY \bc = \bX^{\T} \bY \bY^{\T} \bt = \bX^{\T} \bY \bY^{\T} \bX \bw,
+\end{equation*}
+\begin{equation*}
+    \bc \varpropto \bY^{\T} \bt = \bY^{\T} \bX \bw = \bY^{\T} \bX \bX^{\T} \bu = \bY^{\T} \bX \bX^{\T} \bY \bc.
+\end{equation*}
+
+
 
 Обновляя вектора по данным правилам, мы максимизируем ковариацию между векторами $\bt$ и $\bu$
 \begin{align*}
@@ -349,6 +357,7 @@ $$
 
 \hspace{1cm}
 \begin{figure}[H]
+\label{scheme_cnlPLS}
 \centering
 \begin{tikzpicture}
     \node (x) [sensor_x]  {$\tilde \bX$};
@@ -430,45 +439,23 @@ $$
 % \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Преобразование зависимой переменной}
+\subsection{Нелинейные преобразования}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    Рассматриваются следующие преобразования пространства зависимой переменной $\bY$:
-    \begin{itemize} 
-    \item криволинейное параметрическое преобразование (примеры преобразований представлены в табл.~\ref{table_functions})
+    Рассматриваются нелинейное параметрическое преобразование пространства зависимой переменной $\bY$
+    и независимой переменной $\bX$ (примеры преобразований представлены в табл.~\ref{table_functions}). Преобразование и вектор параметров, относящиеся к зависимой переменной и независимой переменной, обозначим соответственно $f_y(\bY, \bv_y)$ и $f_x(\bX, \bv_y)$ и введем переменные для преобразованных пространств
     \begin{equation}
-    \label{transf_y}
-        \breve \bY = g_y (\bY, \bv_y),
-    \end{equation}
-    \item нелинейное непараметрическое преобразование
-    \begin{equation*}
-        \hat \bY = h_y (\bY),
-    \end{equation*}
-    \item суперпозиция преобразований   $
-    \begin{diagram}
-    \node{\bY}
-    \arrow{e,t}{g_y(\bY, \bv_y)}
-    \node{\breve \bY}
-    \arrow{e,t}{h_y(\breve \bY)}
-    \node{\tilde \bY}
-    \end{diagram}
-    $
-    \begin{equation*}
-        \tilde \bY = h_y (\breve \bY) = h_y( g_y( \bY, \bv_y)) = f_y(\bY, \bv).
-    \end{equation*}
+    \label{transf}
+        \tilde \bY = f_y (\bY, \bv_y),\quad \tilde \bX = f_x(\bX, \bv_x).
+    \end{equation}  
 
-    \end{itemize}
-
-
-    % $$
-    %     \begin{diagram}
-    %     \node{\bY}
-    %     \arrow{e,t}{g(\bY, \bv)}
-    %     \node{\breve \bY}
-    %     \arrow{e,t}{h(\breve \bY)}
-    %     \node{\tilde \bY}
-    %     \end{diagram}
-    %     $$
+    % $\begin{diagram}
+    % \node{\bY}
+    % \arrow{e,t}{g_y(\bY, \bv_y)}
+    % \node{\breve \bY}
+    % \arrow{e,t}{h_y(\breve \bY)}
+    % \node{\tilde \bY}
+    % \end{diagram}$
  
 % \begin{table}
 % \centering
@@ -484,13 +471,14 @@ $$
 % \end{tabular}
 % \caption{Криволинейные преобразования}
 % \label{table_functions}
-% \end{table}  
+% \end{table}
+
 Функции для криволинейных преобразований удовлетворяют следующим условиям:
 \begin{itemize}
-    \item $g: \mathbb{R} \to \mathbb{R}$,
-    \item $g(0) = 0$,
-    \item $g$ дифференцируется по параметрам $\bv_y$,
-    \item существует $g^{-1}$.
+    \item $f: \mathbb{R} \to \mathbb{R}$,
+    \item $f(0) = 0$,
+    \item $f$ дифференцируется по параметрам $\bv_y$,
+    \item существует $f^{-1}$.
 \end{itemize}
 
 \begin{table}[h]
@@ -498,19 +486,21 @@ $$
 \begin{tabular}{|l|l|l|}
 \hline
 \textbf{№} & \textbf{Функция}                                  & \textbf{Параметры} \\ \hline
-1          & $g(x) = \sign(x)\exp(a)(\exp(b|x|) - 1)$          & $a, b > 0$         \\ \hline
-2          & $g(x) = \sign(x)\exp(a)(\exp(b\ln(1+ \,|x|) - 1)$ & $a, b > 0$         \\ \hline
-3          & $g(x) = \sign(x)\exp(a)(\exp(b|x|^{1/2}) - 1)$    & $a, b > 0$         \\ \hline
-4          & $g(x) = \sign(x)\exp(a)(\exp(b|x|^{1/3}) - 1)$    & $a, b > 0$         \\ \hline
-5          & $g(x) = \sign(x)\exp(a)(\exp(b|x|^{1/4}) - 1)$    & $a, b > 0$         \\ \hline
-6          & $g(x) = \sign(x)\exp(a)(\exp(b|x|^{2}) - 1)$      & $a, b > 0$         \\ \hline
+1          & $f(x) = \sign(x)\exp(a)(\exp(b|x|) - 1)$          & $a, b > 0$         \\ \hline
+2          & $f(x) = \sign(x)\exp(a)(\exp(b\ln(1+ \,|x|) - 1)$ & $a, b > 0$         \\ \hline
+3          & $f(x) = \sign(x)\exp(a)(\exp(b|x|^{1/2}) - 1)$    & $a, b > 0$         \\ \hline
+4          & $f(x) = \sign(x)\exp(a)(\exp(b|x|^{1/3}) - 1)$    & $a, b > 0$         \\ \hline
+5          & $f(x) = \sign(x)\exp(a)(\exp(b|x|^{1/4}) - 1)$    & $a, b > 0$         \\ \hline
+6          & $f(x) = \sign(x)\exp(a)(\exp(b|x|^{2}) - 1)$      & $a, b > 0$         \\ \hline
 \end{tabular}
-\caption{Криволинейные преобразования}
+\caption{Нелинейные преобразования}
 \label{table_functions}
 \end{table}
 
+
+
 Для обучения параметров $\bv_y$ используется градиентный метод. 
-Предлагается подход для обновления весов $\bv_y$, основаный на линеаризации функции преобразования. Разложим (\ref{transf_y}) в ряд Тейлора до второго порядка: 
+Предлагается подход для обновления весов $\bv_y$, основаный на линеаризации функции преобразования. Разложим (\ref{transf}) в ряд Тейлора до второго порядка: 
 $$
     \bu \approx \bu_{0} + \frac{\partial \bu}{\partial \bv_y} \Delta \bv_y.
 $$
@@ -533,34 +523,36 @@ $$
 \Delta \bv_y  = (\bJ_u^{\T} \bJ_u)^{-1} \bJ_u^{\T} (\bu - \bu_0).
 \end{equation}
 
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Преобразование независимой переменной}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    Аналогично преобразованию целевой переменной $\bY$, совершается преобразование зависимой переменной $\bX$ для учета мультиколлинеарности в признаковом пространстве. 
-
-    Рассмотрим преобразования $\bX$
-    \begin{itemize} 
-    \item криволинейное с вектором параметров $\bv$ (табл.~\ref{table_functions})
-    \begin{equation}
-    \label{transf_y}
-        \breve \bX = g_x (\bX, \bv_x),
-    \end{equation}
-    \item нелинейное непараметрическое преобразование
-    \begin{equation*}
-        \hat \bX = h_x (\bX),
-    \end{equation*}
-    \item суперпозиция преобразований 
-    \begin{equation*}
-        \tilde \bX = h_x (\breve \bX) = h_x( g_x( \bX, \bv_x)) = f_x(\bX, \bv_x).
-    \end{equation*}
-    \end{itemize}
 
 Аналогично преобразованию зависимой переменной сводим задачу обновления вектора параметров $\bv_x$ к задаче линейной регрессии:
 
 \begin{align*}
-	\bt - \bt_0 \approx \frac {\partial \bt}{\partial \bv_x} \Delta \bv_x = \bJ_t \Delta \bv_x \\
-	\Delta \bv_x  = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} (\bt - \bt_0).
+    \bt - \bt_0 \approx \frac {\partial \bt}{\partial \bv_x} \Delta \bv_x = \bJ_t \Delta \bv_x \\
+    \Delta \bv_x  = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} (\bt - \bt_0).
 \end{align*}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Преобразование независимой переменной}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Аналогично преобразованию целевой переменной $\bY$, совершается преобразование зависимой переменной $\bX$ для учета мультиколлинеарности в признаковом пространстве. 
+
+    % Рассмотрим преобразования $\bX$
+    % \begin{itemize} 
+    % \item криволинейное с вектором параметров $\bv$ (табл.~\ref{table_functions})
+    % \begin{equation}
+    % \label{transf_y}
+    %     \breve \bX = g_x (\bX, \bv_x),
+    % \end{equation}
+    % \item нелинейное непараметрическое преобразование
+    % \begin{equation*}
+    %     \hat \bX = h_x (\bX),
+    % \end{equation*}
+    % \item суперпозиция преобразований 
+    % \begin{equation*}
+    %     \tilde \bX = h_x (\breve \bX) = h_x( g_x( \bX, \bv_x)) = f_x(\bX, \bv_x).
+    % \end{equation*}
+    % \end{itemize}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Алгоритм cnlPLSR}
