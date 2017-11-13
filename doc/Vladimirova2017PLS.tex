@@ -341,52 +341,93 @@ $$
 
 %FIGURE 2
 
-\tikzstyle{sensor_x}=[draw, fill=blue!0, text width=4em, 
-    text centered, minimum height=5em]
-\tikzstyle{sensor_y}=[draw, fill=blue!0, text width=2.7em, 
-    text centered, minimum height=5em]
+\tikzstyle{sensor_x}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=3em]
+\tikzstyle{sensor_t}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2em]
+\tikzstyle{sensor_p}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=3em]
+\tikzstyle{sensor_y}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2.5em]
+\tikzstyle{sensor_q}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=2.5em]
+
+\hspace{1cm}
 \begin{figure}[H]
 \centering
-{\footnotesize
-\def\blockdist{2.3}
-\def\edgedist{2.5}
-\vspace{1cm}
-\hspace{1cm}
 \begin{tikzpicture}
+    \node (x) [sensor_x]  {$\tilde \bX$};
+    \node[sensor_x, left of = x, node distance=6.5em] (x_init) {$\bX$};
+    % \arrow{x_init,x}{h_y(\breve \bY)}
+    \node[right of = x_init, node distance=3.3em] (x_trans) {$\overset{f_x}{\longrightarrow}$};
+    \node[right of = x, node distance=3em] (x_equal) {=};
+    \node[sensor_t, right of = x_equal, node distance=2.5em] (t) {$\bT$};
+    \node[right of = t, node distance=2.5em] (x_times) {$\times$};
+    \node[sensor_p, right of = x_times, node distance=2.8em] (p) {$\bP^{\T}$};
+    \node[right of = p, node distance=2.8em] (x_sum) {+};
+    \node[sensor_x, right of = x_sum, node distance=2.8em] (e) {$\bE$};
+    % \node[below of = x, node distance=3.5em] (x_size) {\footnotesize{$m\times n$}};
+    % \node[below of = t, node distance=3.5em] (t_size) {\footnotesize{$m\times l$}};
+    % \node[below of = p, node distance=2.3em] (p_size) {\footnotesize{$l\times n$}};
+    % \node[below of = e, node distance=3.5em] (e_size) {\footnotesize{$m\times n$}};
 
-    \node (x) [sensor_x]  {$\bX$};
-    \path (x.south)+(0,-2) node (tilde_x) [sensor_x] {$\tilde \bX$};
-    \path (x.east)+(4,0) node (y) [sensor_y] {$\bY$};
-    \path (y.south)+(0,-2) node (tilde_y) [sensor_y] {$\tilde \bY$};
-    \path (tilde_x.south)+(0,-0.8) node (x_form) {$\tilde \bX = \bT \bP^{T} + \bE$};
-    \path (tilde_y.south)+(0.4,-0.8) node (y_form) {$\tilde \bY = \bU \bQ^{\T} + \bF$};
-    \path (tilde_x.south)+(2.5,-1.3) node (u_form) {$\bU \approx \bT \bD$};
-
-
-    \path [draw, ->] (x.south) -- node [right] {$f_x(\bX, \bv_x)$} 
-        (tilde_x.north);
-    \path [draw, ->] (y.south) -- node [right] {$f_y(\bY, \bv_y)$} 
-        (tilde_y.north);
-    %tilde X
-    \path [draw, -] +(1,-2) -- node [right] {$\bt$}
-      +(1,-3.7);
-    \path [draw, -] +(0.8,-3.9) -- node [below] {$\bp$}
-      +(-0.8,-3.9); 
-    %tilde Y
-    \path [draw, -] +(4.05,-2) -- node [left] {$\bu$}
-      +(4.05,-3.7);
-    \path [draw, -] +(4.2,-3.9) -- node [below] {$\bq$}
-      +(5.4,-3.9);
-
-    \path [draw, ->] +(0.79,-3.77) -- node [above] {$\bw$}
-      +(2.31,-4.8);
-    \path [draw, ->] +(4.21,-3.77) -- node [above] {$\bc$}
-      +(1.9,-4.8);
+    \node[below of = x_init, node distance=7em] (y_init) [sensor_y]  {$\bY$};
+    \node[below of = x_trans, node distance=7em] (y_trans) {$\overset{f_y}{\longrightarrow}$};
+    \node[below of = x, node distance=7em] (y) [sensor_y]  {$\tilde \bY$};
+    \node[below of = x_equal, node distance=7em] (y_equal) {=};
+    \node[sensor_t, below of = t, node distance=7em] (u) {$\bU$};
+    \node[below of = x_times, node distance=7em] (y_times) {$\times$};
+    \node[sensor_q, below of = p, node distance=7em] (q) {$\bQ^{\T}$};
+    \node[below of = x_sum, node distance=7em] (y_sum) {+};
+    \node[sensor_y, below of = e, node distance=7em] (f) {$\bF$};
 \end{tikzpicture}
-}
-\caption{Схема модифицированного метода частных наименьших квадратов}
-\label{scheme_cnlPLS}
+\caption{Размерности векторов в алгоритме cnlPLS}
 \end{figure}
+
+
+% FIGURE 2 OLD
+
+% \tikzstyle{sensor_x}=[draw, fill=blue!0, text width=4em, 
+%     text centered, minimum height=5em]
+% \tikzstyle{sensor_y}=[draw, fill=blue!0, text width=2.7em, 
+%     text centered, minimum height=5em]
+% \begin{figure}[H]
+% \centering
+% {\footnotesize
+% \def\blockdist{2.3}
+% \def\edgedist{2.5}
+% \vspace{1cm}
+% \hspace{1cm}
+% \begin{tikzpicture}
+
+%     \node (x) [sensor_x]  {$\bX$};
+%     \path (x.south)+(0,-2) node (tilde_x) [sensor_x] {$\tilde \bX$};
+%     \path (x.east)+(4,0) node (y) [sensor_y] {$\bY$};
+%     \path (y.south)+(0,-2) node (tilde_y) [sensor_y] {$\tilde \bY$};
+%     \path (tilde_x.south)+(0,-0.8) node (x_form) {$\tilde \bX = \bT \bP^{T} + \bE$};
+%     \path (tilde_y.south)+(0.4,-0.8) node (y_form) {$\tilde \bY = \bU \bQ^{\T} + \bF$};
+%     \path (tilde_x.south)+(2.5,-1.3) node (u_form) {$\bU \approx \bT \bD$};
+
+
+%     \path [draw, ->] (x.south) -- node [right] {$f_x(\bX, \bv_x)$} 
+%         (tilde_x.north);
+%     \path [draw, ->] (y.south) -- node [right] {$f_y(\bY, \bv_y)$} 
+%         (tilde_y.north);
+%     %tilde X
+%     \path [draw, -] +(1,-2) -- node [right] {$\bt$}
+%       +(1,-3.7);
+%     \path [draw, -] +(0.8,-3.9) -- node [below] {$\bp$}
+%       +(-0.8,-3.9); 
+%     %tilde Y
+%     \path [draw, -] +(4.05,-2) -- node [left] {$\bu$}
+%       +(4.05,-3.7);
+%     \path [draw, -] +(4.2,-3.9) -- node [below] {$\bq$}
+%       +(5.4,-3.9);
+
+%     \path [draw, ->] +(0.79,-3.77) -- node [above] {$\bw$}
+%       +(2.31,-4.8);
+%     \path [draw, ->] +(4.21,-3.77) -- node [above] {$\bc$}
+%       +(1.9,-4.8);
+% \end{tikzpicture}
+% }
+% \caption{Схема модифицированного метода частных наименьших квадратов}
+% \label{scheme_cnlPLS}
+% \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Преобразование зависимой переменной}
@@ -483,7 +524,7 @@ $$
     \bJ_u = \frac {\partial \bu}{\partial \bv_y} 
     = \frac {\partial }{\partial \bv_y} (\tilde \bY \bc)
     = \frac1{(\bt^{\T}\bt)} \frac {\partial }{\partial \bv_y} \left(\tilde \bY \tilde \bY^{\T}\bt \right) 
-    =\frac{2}{(\bt^{\T}\bt)} \tilde \bY \cdot \frac {\partial}{\partial \bv_y}  \left(\tilde \bY^{\T} \right) \bt.
+    = \frac{1}{(\bt^{\T}\bt)} \left( \frac {\partial \tilde \bY }{\partial \bv_y}  \cdot \tilde \bY^{\T}  + \tilde \bY \cdot \frac {\partial \tilde \bY^{\T}  }{\partial \bv_y}  \right) \bt.
 \]
 
 Правило обновления для вектора $\Delta \bv$ является решением задачи регрессии рассогласования
