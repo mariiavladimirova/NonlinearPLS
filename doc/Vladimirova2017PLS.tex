@@ -29,6 +29,7 @@
 \newcommand{\bP}{\mathbf{P}}
 \newcommand{\bT}{\mathbf{T}}
 \newcommand{\bQ}{\mathbf{Q}}
+\newcommand{\bC}{\mathbf{C}}
 \newcommand{\bE}{\mathbf{E}}
 \newcommand{\bF}{\mathbf{F}}
 \newcommand{\bU}{\mathbf{U}}
@@ -140,83 +141,29 @@
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Постановка задачи прогнозирования}
+\section{Постановка задачи}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Рассмотривается сигнал $\mathbf{x} = [x_t]$,  $t = 1, \dots , n$, $x_t \in \mathbb{R}$. Необходимо спрогнозировать $r$ значений сигнала или отклика:  
-$\mathbf{y} = [y_t]$,  $t = 1, \dots , r$, $y_t \in \mathbb{R}$. 
-Прогнозом могут являться, например, $r$ последующих значений временного ряда. 
-Предполагается, что $r < n$. 
 
+Пусть $\mathfrak{D}= \left( \bX, \bY \right)$~--- выборка, $\mathbf{X} = \{\bx_i\}_{i=1}^m\in \mathbb{R}^{m \times n}$~--- матрица объектов, $\mathbf{Y} = \{\by_i\}_{i=1}^m \in \mathbb{R}^{m \times r}$~--- матрица ответов. 
+В случае данных электроэнергии $i$-ая строка  матрицы $\bX$~--– локальная история сигнала ($n$ значений сигнала, начиная с момента $i$), а $i$-ая строка матрицы $\bY$~--– локальный прогноз, то есть $r$ значений сигнала, начиная с момента $n+1$. В случае данных ECoG матрица $\bX$ состоит из пространственно-временного спектрального представления временных рядов напряжения, а матрица $\bY$ содержит информацию о положении руки. Процесс генерации матрицы $\bX$ из значений натряжения описан в (ссылка на Мотренко). 
 
-Предполагается, что сигнал обладает следующими свойствами: 
-\begin{itemize}
-\item значения сигнала получены через одинаковые промежутки времени, 
-\item в сигнале нет пропущенных значений,
-\item сигнал имеет период $\tau > r$. 
-\end{itemize}
-Для решения задачи прогнозирования сигнала предлагается использовать авторегрессионную модель. 
-В авторегрессионной модели признаками являются предыдущие значения прогнозируемого сигнала. 
-Предполагается, что значение сигнала в данный момент времени линейно зависит от предыдущих значений этого же сигнала.
+Предположим, что между объектами $\bx \in \mathbb{R}^n$ и ответами $\by \in \mathbb{R}^r$ существует линейная зависимость 
+$$\by = \bx \bTheta + \boldsymbol{\epsilon}, $$ 
+где $\bTheta \in \mathbb{R}^{n \times r}$~---~матрица параметров модели, а~$\boldsymbol{\epsilon}\in \mathbb{R}^{r}$~---~вектор регрессионных остатков.
 
-Пусть $\mathfrak{D}= \left( \bX, \bY \right)$~--- выборка, $\mathbf{X} = \{\bx_i\}_{i=1}^m \in \mathbb{R}^{m \times n}$~--- матрица объектов, $\mathbf{Y}= \{\by_i\}_{i=1}^m \in \mathbb{R}^{m \times r}$~--- матрица ответов. 
-Каждая строка $\bx_i$ матрицы $\mathbf{X}$~--– локальная история сигнала ($n$ значений сигнала, начиная с момента $i$). 
-Каждая строка $\by_i$ матрицы $\mathbf{Y}$~--– локальный прогноз (например, $r$ значений сигнала, начиная с момента $n+1$). Матрицы $\bX$ и $\bY$ имеют следующую структуру:
-$$
-\left[ \mathbf{X \, | \, Y} \right] = 
-    \begin{bmatrix}
-        x_1 & x_2 & \dots  & x_{n} & \vrule & y_1 & y_2 & \dots  & y_{r}\\
-        x_2 & x_3 & \dots & x_{n + 1} & \vrule & y_2 & y_3 & \dots  & y_{r+1}\\
-        \vdots & \vdots & \ddots & \vdots & \vrule & \vdots & \vdots & \ddots & \vdots \\
-        x_{m} & x_{m+1} & \dots  & x_{m+n-1} & \vrule & y_{m} & y_{m+1} & \dots  & y_{r+m-1}
-    \end{bmatrix} = 
-    \begin{bmatrix}
-        \bx_1 & \vrule & \by_1\\
-        \bx_2 &\vrule & \by_2\\
-        \vdots & \vrule &  \vdots \\
-        \bx_m & \vrule & \by_m
-    \end{bmatrix}.
-$$
+Введем квадратичную функцию ошибки $S$ на выборке $\mathfrak{D}$:
+\[
+	S(\bTheta | \mathfrak{D}) = {\bigl\| \mathbf{X}\bTheta - \mathbf{Y} \bigr\| }_2^2 = \sum_{i=1}^m \| \bx_i \bTheta - \by_i\|_2^2.
+\]
 
-
-В авторегрессионной модели матрица ответов представляется в виде 
-$$\mathbf{Y} = f (\mathbf{X},  \bTheta) + \epsilon ( \mathbf{X} ), $$ 
-где  $f (\mathbf{X},  \bTheta) = \mathbf{X} \bTheta$~---~линейная модель, $\bTheta \in \mathbb{R}^{n \times r}$~---~матрица параметров модели, а~$\epsilon(\mathbf{X})\in \mathbb{R}^{n \times r}$~---~матрица регрессионных остатков.
-
-
-Введем  функцию ошибки $S$ на выборке $\mathfrak{D}$:
-$$S(\bTheta | \mathfrak{D}) = {\bigl\| f(\mathbf{X},  \bTheta) - \mathbf{Y} \bigr\| }_2^2 =  {\bigl\| \mathbf{X}\bTheta - \mathbf{Y} \bigr\| }_2^2.$$
-Разобъем выборку $\mathfrak{D}$ на обучающую $\mathfrak{D}_{\mathcal{L}}$ и контрольную $\mathfrak{D}_{\mathcal{C}}$, где $\mathfrak{D}_{\mathcal{L}} \cap \mathfrak{D}_{\mathcal{C}} = \emptyset,\ \mathfrak{D}_{\mathcal{L}} \cup \mathfrak{D}_{\mathcal{C}} = \mathfrak{D}$.
-% РИСУНОК
-% На рис.~\ref{regression_train_test} \textcolor{red}{ПОЧЕМУ-ТО НЕ ССЫЛКА} проиллюстрировано решение задачи линейной регрессии, где в качестве объектов выступают временные ряды, а в качестве ответов~--- вектора предсказаний. Необходимо найти аппроксимирующую функцию, отображающую пространство объектов в пространство ответов с минимальной ошибкой.
-
-
-%Рассмотрим матрицу
-%\centerline{\includegraphics[scale=0.2]{design.eps}}
-%\begin{Large}
-%$$\mathbf{X}^* = \left(
-%\begin{array}{c|c}
-%  \underset{1 \times n}{\mathbf{x}\mathstrut} &  \underset{1 \times r}{\mathbf{y}\mathstrut} \\ 
-%  \hline
-%  \underset{l \times n}{\mathbf{X}_\mathcal{L}} &  \underset{l \times r}{\mathbf{Y}_\mathcal{L}} 
-% \end{array}
-%\right),$$
-%\end{Large}
-
-%где $\mathfrak{D}_\mathcal{L}=   \left( \mathbf{X}_\mathcal{L}, \mathbf{Y}_\mathcal{L}\right)$ -- обучающая выборка, $\mathbf{x}$ -- исторические значение сигнала $\mathbf{s}$, $l = |\mathcal{L}|$. 
-Прогноз отклика сигнала на $r$ следующих значений ряда~--- это ответ модели при найденных оптимальных параметрах задачи авторегрессии: $\mathbf{y} = \mathbf{x}\bTheta^*$, где 
-$$ {\bTheta}^{*} = \argmin_{\bTheta \in \mathbb{R}^{n \times r}} S(\bTheta | \mathfrak{D}_\mathcal{L}).$$
+Оптимальные значения матрицы параметров $\bTheta$ находятся минимизацией функционала ошибки 
+\[
+{\bTheta}^{*} = \argmin_{\bTheta \in \mathbb{R}^{n \times r}} S(\bTheta | \mathfrak{D}).
+\]
  
 
-%Решение задачи: $$ {\mathbf{W}}^{*} = {\left( {\mathbf{X}}^{\mathsf{T}} {\mathbf{X}} \right)}^{-1} {\mathbf{X}}^{\mathsf{T}} \mathbf{Y} .$$
- %Обозначим $$\mathbf{z} =  {[x_{T-\tau+2}, x_{T-\tau+3} ,\dots ,x_{T}]}^{\mathsf{T}}. $$
-% Тогда прогноз для сигнала в момент $T+1$: $$x_{T+1} = \mathbf{z^{\mathsf{T}}w}.$$
-%Индуктивно, используя информацию о сигнале и уже спрогнозированные значения, с помощью авторегрессионной модели спрогнозируем значение сигнала в момент времени ${T+2}$, затем ${T+3}$ и так далее до $T+\tau$.
-
 Одним из основных препятствий эффективного применения регрессионного анализа является мультиколлинеарность. Она связана с линейной зависимостью между признаками объектов. В результате мультиколлинеарности матрица парных коэффициентов корреляции и матрица $\bX^{\T} \bX$ становятся слабообусловленными, т.е. их определители близки к нулю. Это приводит к неустойчивости оценок коэффициентов регрессии, так как в их выражения входит обратная матрица $(\bX^{\T}\bX)^{-1}$, получение которой связано с делением на определитель матрицы $\bX^{\T}\bX$. 
-Значения сигнала в соседние моменты времени являются зависимыми.
-Таким образом, наблюдается мультиколлинеарность между признаками авторегрессионной модели прогнозирования сигнала. 
-Для решения проблемы мультиколлинеарности применяются методы отбора признаков. Оптимальные параметры задачи регрессии $\bTheta$ настраиваются на обучающей выборке $\mathfrak{D}_\mathcal{L}$. 
-Отбор признаков происходит на контрольной выборке $\mathfrak{D}_\mathcal{C}$. 
+Для решения проблемы мультиколлинеарности применяются методы отбора признаков. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Метод частных наименьших квадратов (PLS)}
@@ -241,90 +188,59 @@ $$ {\bTheta}^{*} = \argmin_{\bTheta \in \mathbb{R}^{n \times r}} S(\bTheta | \ma
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
-    \node (x) [sensor_x]  {$\bX$};
+    \node (x) [sensor_x]  {$\bX$ \\ \scriptsize{$m\times n$}};
     \node[right of = x, node distance=3em] (x_equal) {=};
-    \node[sensor_t, right of = x_equal, node distance=2.5em] (t) {$\bT$};
+    \node[sensor_t, right of = x_equal, node distance=2.5em] (t) {$\bT$ \\ \scriptsize{$m\times l$}};
     \node[right of = t, node distance=2.5em] (x_times) {$\times$};
-    \node[sensor_p, right of = x_times, node distance=2.8em] (p) {$\bP^{\T}$};
+    \node[sensor_p, right of = x_times, node distance=2.8em] (p) {$\bP^{\T}$ \\ \scriptsize{$l\times n$}};
     \node[right of = p, node distance=2.8em] (x_sum) {+};
-    \node[sensor_x, right of = x_sum, node distance=2.8em] (e) {$\bE$};
+    \node[sensor_x, right of = x_sum, node distance=2.8em] (e) {$\bE$ \\ \scriptsize{$m\times n$}};
 
-    \node[below of = x, node distance=3em] (x_size) {\footnotesize{$m\times n$}};
-    \node[below of = t, node distance=3em] (t_size) {\footnotesize{$m\times l$}};
-    \node[below of = p, node distance=1.5em] (p_size) {\footnotesize{$l\times n$}};
-    \node[below of = e, node distance=3em] (e_size) {\footnotesize{$m\times n$}};
-
-    \node[below of = x, node distance=7em] (y) [sensor_y]  {$\bY$};
+    \node[below of = x, node distance=7em] (y) [sensor_y]  {$\bY$ \\ \scriptsize{$m\times r$}};
     \node[below of = x_equal, node distance=7em] (y_equal) {=};
-    \node[sensor_t, below of = t, node distance=7em] (u) {$\bU$};
+    \node[sensor_t, below of = t, node distance=7em] (u) {$\bU$ \\ \scriptsize{$m\times l$}};
     \node[below of = x_times, node distance=7em] (y_times) {$\times$};
-    \node[sensor_q, below of = p, node distance=7em] (q) {$\bQ^{\T}$};
+    \node[sensor_q, below of = p, node distance=7em] (q) {$\bQ^{\T}$ \\ \scriptsize{$l\times r$}};
     \node[below of = x_sum, node distance=7em] (y_sum) {+};
-    \node[sensor_y, below of = e, node distance=7em] (f) {$\bF$};
-
-    \node[below of = y, node distance=3em] (y_size) {\footnotesize{$m\times r$}};
-    \node[below of = u, node distance=3em] (u_size) {\footnotesize{$m\times l$}};
-    \node[below of = q, node distance=1.5em] (q_size) {\footnotesize{$l\times r$}};
-    \node[below of = f, node distance=3em] (f_size) {\footnotesize{$m\times r$}};
+    \node[sensor_y, below of = e, node distance=7em] (f) {$\bF$ \\ \scriptsize{$m\times r$}};
 
 \end{tikzpicture}
 \caption{Размерности векторов в алгоритме PLS}
 \end{figure}
+Матрицы $\bT,\ \bU$ являются матрицами объектов и ответов в спроектированном пространстве; $\bP,\ \bQ$~--- матрицы перехода из нового пространства в старое; $\bE,\ \bF$~--- матрицы невязок. 
 
-% _______________________________________________________
+Псевдокод метода регрессии PLS приведен в алгоритме~\ref{PLSR_pseudo}. Алгоритм итеративно на каждом из $l$ шагов вычисляет по одному столбцу $\bt_k$, $\bu_k$, $\bp_k$, $\bq_k$ матриц $\bT$, $\bU$, $\bP$, $\bQ$ соответственно. Предполагается, что вектора новых признаков $\bt_k$ и $\bu_k$ являются линейными комбинациями столбцов матриц $\bX$ и $\bY$ соответственно.
+Целью алгоритма является максимизация ковариации между векторами $\bt_k$ и $\bu_k$. Этим достигается наилучшее описание пространств матриц $\bX$ и $\bY$, а также их взаимной связи
+\[
+	\text{cov} (\bt_k, \bu_k) = \text{corr} (\bt_k, \bu_k) \cdot \sqrt{\text{Var}(\bt_k)} \cdot \sqrt{\text{Var}(\bu_k)}.
+\]
 
+Во внутреннем цикле алгоритма вычисляются вектора $\bw_k$ и $\bc_k$. Из данных векторов строятся матрицы $\bW$ и $\bC$ соответственно
+Вектора $\bw_k$, $\bc_k$ являются собственными векторами матриц $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ и $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$ соответственно
 
-
-\begin{align}
-\label{pls_x_y}
-    \underset{m \times n}{\bX} &= \underset{m \times l}{\bT} \ \underset{l \times n}{\bP^{\T}} + \underset{m \times n}{\bE},\\
-    \underset{m \times r}{\bY} &= \underset{m \times l}{\bU} \ \underset{l \times r}{\bQ^{\T}} + \underset{m \times r}{\bF},
-\end{align}
-где $\bT,\ \bU$~--- матрицы объектов и ответов в спроектированном пространстве, причём $\bT^{\T} \bT = \bI_{l}$; $\bP,\ \bQ$~--- матрицы перехода из нового пространства в старое; $\bE,\ \bF$~--- матрицы невязок. 
-% Размеры векторов в алгоритме можно изобразить следующим образом:
-
-
-
-
-Псевдокод метода регрессии PLS приведен в алгоритме~\ref{PLSR_pseudo}. Алгоритм итеративно на каждом из $l$ шагов вычисляет по одному столбцу $\bt$, $\bu$, $\bp$, $\bq$, из которых путем присоединения формируются матрицы $\bT$, $\bU$, $\bP$, $\bQ$ соответственно. Предполагается, что вектора новых признаков $\bt$ и $\bu$ являются линейными комбинациями столбцов матриц $\bX$ и $\bY$ соответственно.
-
-
-Во внутреннем цикле алгоритма вычисляются вектора $\bw$ и $\bc$. 
-Правила обновления векторов $\bw$, $\bc$ совпадают с итерацией Power method \cite{Mises1929}. 
-Вектора $\bw$, $\bc$ являются собственными векторами матриц $\bX^{\T} \bY \bY^{\T} \bX$ и $\bY^{\T} \bX \bX^{\T} \bY$ соответственно
-% \begin{align*}
-% 	\bw \varpropto \bX^{\T} \underbrace{\bY \overbrace{\bY^{\T} \underbrace{\bX \bw}_{\bt}}^{\bc}}_{\bu}
-% \end{align*}
 \begin{equation*}
-    \bw \varpropto \bX^{\T} \bu = \bX^{\T} \bY \bc = \bX^{\T} \bY \bY^{\T} \bt = \bX^{\T} \bY \bY^{\T} \bX \bw,
+    \bw_k \varpropto \bX_k^{\T} \bu_k = \bX_k^{\T} \bY_k \bc_k \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bt_k = \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_k,
 \end{equation*}
 \begin{equation*}
-    \bc \varpropto \bY^{\T} \bt = \bY^{\T} \bX \bw = \bY^{\T} \bX \bX^{\T} \bu = \bY^{\T} \bX \bX^{\T} \bY \bc.
+    \bc_k \varpropto \bY_k^{\T} \bt_k = \bY_k^{\T} \bX_k \bw_k \varpropto \bY_k^{\T} \bX_k \bX_k^{\T} \bu_k = \bY_k^{\T} \bX_k \bX_k^{\T} \bY_k \bc_k.
 \end{equation*}
 
+Правила обновления векторов $\bw_k$, $\bc_k$ совпадают с итерацией алгоритма поиска максимального собственного значения~\cite{Mises1929}. В результате выполнения внутреннего цикла вектора $\bw_k$ и $\bc_k$ будут являться собственными векторами матриц $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ и $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, соответствующими максимальным собственным значениям.
 
-
-Обновляя вектора по данным правилам, мы максимизируем ковариацию между векторами $\bt$ и $\bu$
+Обновляя вектора по данным правилам, мы максимизируем ковариацию между векторами $\bt_k$ и $\bu_k$
 \begin{align*}
-    \max_{\bt, \bu}  \text{cov} (\bt, \bu)^2 &= \max_{\substack{\|\bw\|=1 \\ \|\bc\| = 1}} \text{cov} \left( \bX \bw, \bY \bc \right)^2 = \max_{\substack{\|\bw\|=1 \\ \|\bc\| = 1}} \text{cov} \left(\bc^{\T}  \bY^{\T} \bX \bw \right)^2 = \\
-    &= \max_{\|\bw\| = 1} \text{cov} \left\|\bY^{\T} \bX \bw \right\|^2 = \max_{\|\bw\| = 1} \bw^{\T} \bX^{\T} \bY \bY^{\T} \bX \bw = \\
-    & = \lambda_{\max} \left( \bX^{\T} \bY \bY^{\T} \bX \right).
+    \max_{\bt_k, \bu_k}  \text{cov} (\bt_k, \bu_k)^2 &= \max_{\substack{\|\bw_k\|=1 \\ \|\bc_k\| = 1}} \text{cov} \left( \bX_k \bw_k, \bY_k \bc_k \right)^2 = \max_{\substack{\|\bw_k\|=1 \\ \|\bc_k\| = 1}} \text{cov} \left(\bc_k^{\T}  \bY_k^{\T} \bX_k \bw_k \right)^2 = \\
+    &= \max_{\|\bw_k\| = 1} \text{cov} \left\|\bY_k^{\T} \bX_k \bw_k \right\|^2 = \max_{\|\bw_k\| = 1} \bw_k^{\T} \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_k = \\
+    & = \lambda_{\max} \left( \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \right).
 \end{align*}
 
-После завершения внутреннего цикла вычисляются вектора $\bp$, $\bq$. Для перехода на следующий шаг необходимо вычесть из матриц $\bX$ и $\bY$ одноранговые аппроксимации.
+После завершения внутреннего цикла вычисляются вектора $\bp_k$, $\bq_k$ проецированием столбцов матриц $\bX_k$ и $\bY_k$ на вектора $\bt_k$ и $\bu_k$. Для перехода на следующий шаг необходимо вычесть из матриц $\bX$ и $\bY$ одноранговые аппроксимации $\bt_k \bp_k^{\T}$ и $\bt_k \bc_k^{\T}$.
 
-Если ковариация между новыми признаками и ответами максимальна, то можно строить регрессионную модель в пространстве меньшей размерности с сохранением уровня точности прогноза. Параметр метода частных наименьших квадратов $l \in \mathbb{N}$ определяет размерность нового пространства. Отбор признаков осуществляется в виде замены исходных признаков на $l$ новых признаков~--- линейные комбинации исходных признаков.
+Для перехода из пространства $\bX$ в пространство $\bT$ применяется линейное преобразование
+\[
+	\bT = \bX \bW (\bP^{\T} \bW)^{-1}.
+\]
 
-
-Чтобы получить модель регрессии, связывающую $\bY$ и $\bX$, на каждом шаге алгоритма~\ref{PLSR_pseudo} находятся коэффициенты $\beta \in  \mathbb{R}$ такие, что $\bu \approx \bt \beta$. Найденные коэффициенты образуют вектор параметров $\boldsymbol{\beta} \in \mathbb{R}^l$. 
-Подставляя вектор параметров в модель~(\ref{pls_x_y}), получаем
-$$
-    \bY = \bU\bQ^{\T}  + \bF \approx \bT \text{diag}(\boldsymbol{\beta}) \bQ^{\T} = \bX \bW \text{diag}(\boldsymbol{\beta}) \bQ^{\T} = \bX \bTheta.
-$$
-
-% _______________________________________________________
-
-% Figure 2
 
 \begin{center}
 \begin{algorithm}[h]
@@ -333,59 +249,30 @@ $$
 \begin{algorithmic}[1]
 \REQUIRE $\bX, \bY, l$;
 \ENSURE $\bT, \bU, \bP, \bQ$;
-\STATE инициализировать $\bu$ (первый столбец матрицы $\bY$)
-\STATE $\bT := \bU := \bP := \bQ := \emptyset$
-\FOR{$i=1,\dots, l$}
+\STATE нормировать матрицы $\bX$ и $\bY$
+\STATE инициализировать $\bu_1$ (первый столбец матрицы $\bY$)
+\STATE $\bX_1 = \bX; \bY_1 = \bY$
+\FOR{$k=1,\dots, l$}
   \REPEAT
-    \STATE $\bw := \bX^{\T} \bu / (\bu^{\T} \bu); \quad \bw: = \frac{\bw}{\| \bw \|}$
-    \STATE $\mathbf{t} := \bX \bw$
-    \STATE $\bc := \bY^{\T} \bt / (\bt^{\T} \bt); \quad \bc: = \frac{\bc}{\| \bc \|}$
-    \STATE $\bu := \bY \bc$
-  \UNTIL{$\bt$ не стабилизируется}
   \vspace{0.1cm}
-  \STATE $\bT := \text{concat}[\bT; \bt]$; $\bU := \text{concat}[\bU; \bu]$
+    \STATE $\bw_k := \bX_k^{\T} \bu_k / (\bu_k^{\T} \bu_k); \quad \bw_k: = \frac{\bw_k}{\| \bw_k \|}$
+    \vspace{0.1cm}
+    \STATE $\mathbf{t_k} := \bX_k \bw_k$
+    \vspace{0.1cm}
+    \STATE $\bc_k := \bY_k^{\T} \bt_k / (\bt_k^{\T} \bt_k)$
+    \vspace{0.1cm}
+    \STATE $\bu_k := \bY_k \bc_k/ (\bc_k^{\T} \bc_k)$
+  \UNTIL{$\bt_k$ не стабилизируется}
   \vspace{0.1cm}
-  \STATE $\bp := \bX^{\T}\bt/(\bt^{\T}\bt),\ \bq := \bY^{\T}\bu/(\bu^{\T}\bu)$
-  \vspace{0.1cm}
-  \STATE $\bP:= \text{concat}[\bP; \bp]$; $\bQ := \text{concat}[\bQ; \bq]$
-  \vspace{0.1cm}
-  \STATE регрессия $\bu$ на $\bt$: $\beta := \bu^{\T} \bt / (\bt^{\T} \bt)$ 
-  \STATE $\bX := \bX - \bt \bp^{\T}$
-  \STATE $\bY := \bY - \beta\bt\bq^{\T}$ 
+  \STATE $\bp_k:= \bX_k^{\T}\bt_k/(\bt_k^{\T}\bt_k),\ \bq_k := \bY_k^{\T}\bu_k/(\bu_k^{\T}\bu_k)$
+  \vspace{0.2cm}
+  \STATE $\bX_{k+1} := \bX_k - \bt_k \cdot \left(\frac{\bX_k^{\T} \bt_k}{\bt_k^{\T} \bt_k}\right)$
+  \vspace{0.2cm}
+  \STATE $\bY_{k + 1} := \bY_k - \bt_k \cdot \left(\frac{\bY_k^{\T} \bt_k}{\bt_k^{\T} \bt_k}\right)$ 
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
 \end{center}
-
-% _______________________________________________________
-
-
-% \begin{center}
-% \begin{algorithm}
-% \begin{algorithmic}[1]
-% \REQUIRE $\mathbf{X}, \mathbf{Y}, l$;
-% \ENSURE $\mathbf{T}, \mathbf{U}, \mathbf{P}, \mathbf{Q}$;
-% \FOR{$i=1,\dots,l$}
-%   \STATE $\mathbf{u} := \mathbf{y}_j$ для произвольного $j$
-%   \REPEAT
-%     \STATE $\mathbf{p := \dfrac{X^{\mathsf{T}}u}{\left\|X^{\mathsf{T}}u \right\|}}$
-%     \STATE $\mathbf{t := Xp}$
-%     \STATE $\mathbf{q := \dfrac{Y^{\mathsf{T}}t}{\left\|Y^{\mathsf{T}}t \right\|}} $
-%     \STATE $\mathbf{u := Yq}$
-%   \UNTIL{$\mathbf{t}$ не перестанет меняться}
-%   \STATE сохранить $\mathbf{t}$, $\mathbf{u}$, $\mathbf{p}$, $\mathbf{q}$
-%   \STATE  $\mathbf{X := X - tp^{\T}}$
-%   \STATE $\mathbf{Y := Y - uq^{\T}}$
-% \ENDFOR
-% \end{algorithmic}
-% \end{algorithm}
-% \end{center}
-
-
-
-% \begin{equation}
-% \mathbf{p} = \argmax_{\left\| \mathbf{w} \right\| = 1} \text{Var}(\mathbf{Xw})  {\left( \text{Corr}\left(\mathbf{Y}, \mathbf{Xw}\right)\right)}^\mathsf{T} {\left( \text{Corr}\left(\mathbf{Y}, \mathbf{Xw}\right)\right)}
-% \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
