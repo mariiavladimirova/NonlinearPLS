@@ -260,11 +260,11 @@ $$\by = \bx \bTheta + \boldsymbol{\epsilon}, $$
 
 Для нахождения коэффициентов регрессии $\bB$ преобразуем полученное за $l$ шагов алгоритма выражение для регрессии матрицы $\bY$ в предположении, что $\bY_{l + 1}$ является матрицей невязки, 
 \begin{equation*}
-    \bY = \bT \bC^{\T} + \bY_{l + 1} = \bX \bW (\bP^{\T} \bW_k)^{-1} \bC^{\T} + \bY_{l + 1} = \bX \bB + \bY_{l + 1}.
+    \bY = \bT \bC^{\T} + \bY_{l + 1} = \bX \bW (\bP^{\T} \bW)^{-1} \bC^{\T} + \bY_{l + 1} = \bX \bB + \bY_{l + 1}.
 \end{equation*}
 Таким образом, 
 \begin{equation*}
-    \bB = \bW (\bP^{\T} \bW_k)^{-1} \bC^{\T}.
+    \bB = \bW (\bP^{\T} \bW)^{-1} \bC^{\T}.
 \end{equation*}
 
 \begin{center}
@@ -528,7 +528,7 @@ $$
 \ENSURE $\bT, \bU, \bP, \bQ, \bv_x, \bv_y$;
 \STATE инициализировать $\bv_x$ и $\bv_y$
 \STATE $\bT := \bU := \bP := \bQ := \emptyset$
-\FOR{$i=1,\dots, l$}
+\FOR{$k=1,\dots, l$}
 \STATE инициализировать $\bt$ (первый столбец матрицы $\bX$)
 \STATE инициализировать $\bu$ (первый столбец матрицы $\bY$)
   \REPEAT
@@ -557,11 +557,9 @@ $$
  \vspace{0.1cm}
  \STATE $\bP:= \text{concat}[\bP; \bp]$; $\bQ := \text{concat}[\bQ; \bq]$
  \vspace{0.1cm}
- \STATE регрессия $\bu$ на $\bt$: $\beta := \bu^{\T} \bt / (\bt^{\T} \bt)$ 
- \vspace{0.1cm}
  \STATE $\tilde \bX := \tilde  \bX - \bt \bp^{\T}$
  \vspace{0.1cm}
- \STATE $\tilde \bY := \tilde  \bY - \beta\bt\bq^{\T}$ 
+ \STATE $\tilde \bY := \tilde  \bY - \bt\bc^{\T}$ 
  \vspace{0.1cm}
   \STATE $\bX = F_x^{-1}(\tilde \bX, \bv_x)$; $\bY = F_y^{-1}(\tilde \bY, \bv_y)$
 \ENDFOR
