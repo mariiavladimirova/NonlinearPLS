@@ -37,6 +37,7 @@
 \newcommand{\bD}{\mathbf{D}}
 \newcommand{\bI}{\mathbf{I}}
 \newcommand{\bJ}{\mathbf{J}}
+\newcommand{\bB}{\mathbf{B}}
 \newcommand{\btheta}{\boldsymbol{\theta}}
 \newcommand{\bTheta}{\boldsymbol{\Theta}}
 
@@ -145,7 +146,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Пусть $\mathfrak{D}= \left( \bX, \bY \right)$~--- выборка, $\mathbf{X} = \{\bx_i\}_{i=1}^m\in \mathbb{R}^{m \times n}$~--- матрица объектов, $\mathbf{Y} = \{\by_i\}_{i=1}^m \in \mathbb{R}^{m \times r}$~--- матрица ответов. 
-В случае данных электроэнергии $i$-ая строка  матрицы $\bX$~--– локальная история сигнала ($n$ значений сигнала, начиная с момента $i$), а $i$-ая строка матрицы $\bY$~--– локальный прогноз, то есть $r$ значений сигнала, начиная с момента $n+1$. В случае данных ECoG матрица $\bX$ состоит из пространственно-временного спектрального представления временных рядов напряжения, а матрица $\bY$ содержит информацию о положении руки. Процесс генерации матрицы $\bX$ из значений натряжения описан в (ссылка на Мотренко). 
+В случае данных электроэнергии $i$-ая строка  матрицы $\bX$~--– локальная история сигнала ($n$ значений сигнала, начиная с момента $i$), а $i$-ая строка матрицы $\bY$~--– локальный прогноз, то есть $r$ значений сигнала, начиная с момента $n+1$. В случае данных ECoG матрица $\bX$ состоит из пространственно-временного спектрального представления временных рядов напряжения, а матрица $\bY$ содержит информацию о положении руки. Процесс генерации матрицы $\bX$ из значений напряжения описан в (ссылка на Мотренко). 
 
 Предположим, что между объектами $\bx \in \mathbb{R}^n$ и ответами $\by \in \mathbb{R}^r$ существует линейная зависимость 
 $$\by = \bx \bTheta + \boldsymbol{\epsilon}, $$ 
@@ -187,12 +188,13 @@ $$\by = \bx \bTheta + \boldsymbol{\epsilon}, $$
 \hspace{1cm}
 \begin{figure}[H]
 \centering
+\footnotesize{
 \begin{tikzpicture}
     \node (x) [sensor_x]  {$\bX$ \\ \scriptsize{$m\times n$}};
     \node[right of = x, node distance=3em] (x_equal) {=};
     \node[sensor_t, right of = x_equal, node distance=2.5em] (t) {$\bT$ \\ \scriptsize{$m\times l$}};
     \node[right of = t, node distance=2.5em] (x_times) {$\times$};
-    \node[sensor_p, right of = x_times, node distance=2.8em] (p) {$\bP^{\T}$ \\ \scriptsize{$l\times n$}};
+    \node[sensor_p, right of = x_times, node distance=2.8em] (p) {$\bP^{\T}$ \\ \vspace{-0.35em}\scriptsize{$l\times n$}};
     \node[right of = p, node distance=2.8em] (x_sum) {+};
     \node[sensor_x, right of = x_sum, node distance=2.8em] (e) {$\bE$ \\ \scriptsize{$m\times n$}};
 
@@ -200,11 +202,12 @@ $$\by = \bx \bTheta + \boldsymbol{\epsilon}, $$
     \node[below of = x_equal, node distance=7em] (y_equal) {=};
     \node[sensor_t, below of = t, node distance=7em] (u) {$\bU$ \\ \scriptsize{$m\times l$}};
     \node[below of = x_times, node distance=7em] (y_times) {$\times$};
-    \node[sensor_q, below of = p, node distance=7em] (q) {$\bQ^{\T}$ \\ \scriptsize{$l\times r$}};
+    \node[sensor_q, below of = p, node distance=7em] (q) {$\bQ^{\T}$ \\ \vspace{-0.35em}\scriptsize{$l\times r$}};
     \node[below of = x_sum, node distance=7em] (y_sum) {+};
     \node[sensor_y, below of = e, node distance=7em] (f) {$\bF$ \\ \scriptsize{$m\times r$}};
 
 \end{tikzpicture}
+}
 \caption{Размерности векторов в алгоритме PLS}
 \end{figure}
 Матрицы $\bT,\ \bU$ являются матрицами объектов и ответов в спроектированном пространстве; $\bP,\ \bQ$~--- матрицы перехода из нового пространства в старое; $\bE,\ \bF$~--- матрицы невязок. 
@@ -234,13 +237,35 @@ $$\by = \bx \bTheta + \boldsymbol{\epsilon}, $$
     & = \lambda_{\max} \left( \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \right).
 \end{align*}
 
-После завершения внутреннего цикла вычисляются вектора $\bp_k$, $\bq_k$ проецированием столбцов матриц $\bX_k$ и $\bY_k$ на вектора $\bt_k$ и $\bu_k$. Для перехода на следующий шаг необходимо вычесть из матриц $\bX$ и $\bY$ одноранговые аппроксимации $\bt_k \bp_k^{\T}$ и $\bt_k \bc_k^{\T}$.
+После завершения внутреннего цикла вычисляются вектора $\bp_k$, $\bq_k$ проецированием столбцов матриц $\bX_k$ и $\bY_k$ на вектора $\bt_k$ и $\bu_k$. Для перехода на следующий шаг необходимо вычесть из матриц $\bX_k$ и $\bY_k$ одноранговые аппроксимации $\bt_k \bp_k^{\T}$ и $\bt_k \bc_k^{\T}$
+\begin{equation*}
+    \bX_{k + 1} = \bX_{k-1} - \bt_k \bp_k^{\T} = \bX - \sum_k \bt_k \bp_k^{\T},
+\end{equation*}
+\begin{equation*}
+    \bY_{k + 1} = \bY_{k-1} - \bt_k \bc_k^{\T} = \bY - \sum_k \bt_k \bc_k^{\T},
+\end{equation*}
+где матрицы с нижним индексом $k$ составленны из $k$ первых векторов, соответственно.
+Выражения для регрессии матрицы $\bX$ и матрицы $\bY$ на полученные ортогональные вектора $\bt_1, \dots, \bt_k$
+\begin{equation*}
+    \bX = \sum_k \bt_k \bp_k^{\T} + \bX_{k + 1} = \bT_k \bP_k^{\bT} + \bX_{k + 1},
+\end{equation*}
+\begin{equation*}
+    \bY = \sum_k \bt_k \bc_k^{\T} + \bY_{k + 1} = \bT_k \bC_k^{\T} + \bY_{k + 1}.
+\end{equation*}
 
 Для перехода из пространства $\bX$ в пространство $\bT$ применяется линейное преобразование
 \[
 	\bT = \bX \bW (\bP^{\T} \bW)^{-1}.
 \]
 
+Для нахождения коэффициентов регрессии $\bB$ преобразуем полученное за $l$ шагов алгоритма выражение для регрессии матрицы $\bY$ в предположении, что $\bY_{l + 1}$ является матрицей невязки, 
+\begin{equation*}
+    \bY = \bT \bC^{\T} + \bY_{l + 1} = \bX \bW (\bP^{\T} \bW_k)^{-1} \bC^{\T} + \bY_{l + 1} = \bX \bB + \bY_{l + 1}.
+\end{equation*}
+Таким образом, 
+\begin{equation*}
+    \bB = \bW (\bP^{\T} \bW_k)^{-1} \bC^{\T}.
+\end{equation*}
 
 \begin{center}
 \begin{algorithm}[h]
@@ -266,9 +291,9 @@ $$\by = \bx \bTheta + \boldsymbol{\epsilon}, $$
   \vspace{0.1cm}
   \STATE $\bp_k:= \bX_k^{\T}\bt_k/(\bt_k^{\T}\bt_k),\ \bq_k := \bY_k^{\T}\bu_k/(\bu_k^{\T}\bu_k)$
   \vspace{0.2cm}
-  \STATE $\bX_{k+1} := \bX_k - \bt_k \cdot \left(\frac{\bX_k^{\T} \bt_k}{\bt_k^{\T} \bt_k}\right)$
+  \STATE $\bX_{k+1} := \bX_k - \bt_k \cdot \left(\frac{\bX_k^{\T} \bt_k}{\bt_k^{\T} \bt_k}\right)^{\T}$
   \vspace{0.2cm}
-  \STATE $\bY_{k + 1} := \bY_k - \bt_k \cdot \left(\frac{\bY_k^{\T} \bt_k}{\bt_k^{\T} \bt_k}\right)$ 
+  \STATE $\bY_{k + 1} := \bY_k - \bt_k \cdot \left(\frac{\bY_k^{\T} \bt_k}{\bt_k^{\T} \bt_k}\right)^{\T}$ 
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
