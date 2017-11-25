@@ -8,6 +8,10 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,shadows}
 \newtheorem{theorem}{Теорема}
+\newtheorem{statement}{Утверждение}
+\usepackage{pb-diagram}
+\usepackage{tikz-cd}
+
 
 \bibliographystyle{jmlda_eng}
 %\renewcommand{\baselinestretch}{1.4}
@@ -67,6 +71,9 @@
 
 \thanks{Проект поддержан грантом РФФИ \No 16-07-01155.}
 
+\tikzcdset{
+	arrow style=tikz,
+	diagrams={>={Straight Barb[scale=0.8]}}}
 
 \begin{document}
 \maketitle
@@ -76,6 +83,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{1. Введение}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 В работе рассматривается задача прогнозирования временных рядов в случае наличия мультиколлинеарности в данных. Методы решения данной задачи сравниваются на двух наборах данных, имеющих избыточную информацию. 
 
 Первый набор данных представляет собой временные ряды объема потребления электроэнергии в Варшаве. 
@@ -146,10 +154,9 @@
 \section{Постановка задачи}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Задана выборка $\mathfrak{D}= \left( \bX, \bY \right)$, где $\mathbf{X} \in \mathbb{R}^{m \times n}$~--- матрица объектов, $\mathbf{Y} $~--- матрица ответов. 
-Строки матрицы $\bX$ являются объектами из некоторого множества $\mathbb{X} \subset \mathbb{R}^{n}$. Каждому объекту соответствует ответ из некоторого множества $\mathbb{Y} \subset \mathbb{R}^r$.
 Способ построения выборки под определенную прикладную задачу описан в разделе "Вычислительный эксперимент".
 
-Предположим, что между объектами $\bx \in \mathbb{X} \subset \mathbb{R}^n$ и ответами $\by \in \mathbb{Y} \subset \mathbb{R}^r$ существует линейная зависимость 
+Предположим, что между объектами $\bx \in \mathbb{R}^n$ и ответами $\by \in \mathbb{R}^r$ существует линейная зависимость 
 \begin{equation}
 \by = \bx \bTheta + \boldsymbol{\epsilon}, 
 \label{eq::model}
@@ -168,222 +175,175 @@
 
 \section{Метод частных наименьших квадратов (PLS)}
 
-Для устранения линейной зависимости и снижения размерности пространства применяется метод главных компонент. 
+Для устранения линейной зависимости и снижения размерности пространства применяется метод главных компонент (PCA). 
 Основным недостатком данного метода является то, что он не учитывает взаимосвязь между объектами и ответами.
-Метод частных наименьших квадратов проецирует пространство объектов $\mathbb{X}$ и пространство ответов $\mathbb{Y}$ в латентное пространство $\mathbb{Z}$ меньшей размерности. В отличие от метода главных компонент, метод частных наименьших квадратов учитывает взаимосвязь между матрицами $\bX$ и $\bY$ и снижает размерность  пространства объектов.
+Метод частных наименьших квадратов (PLS) проецирует матрицу объектов $\bX$ и матрицу ответов $\bY$ в латентное пространство $\mathbb{R}^l$ меньшей размерности ($l < n$) с сохранением взаимосвязи между объектами и ответами.
 
-Матрица плана $\bX$ и матрица ответов $\bY$ проецируются на пространство $\mathbb{Z}$ размерности~$l$ ($l < n$) следующим образом:
+Схема алгоритма PLS изображена на следующей коммутативной диаграмме
+
+\[
+\begin{tikzcd}[column sep=5em, row sep=3em]
+\bX
+\arrow[]{rr}{\bTheta}
+\arrow[shift left=0.5ex]{dr}{\bW^*}
+& & \bY
+\arrow[swap, shift right=0.5ex]{dl}{\bC^*}
+\\
+& \bT
+\arrow[shift left=0.5ex]{ul}{\bP^{\T}}
+\arrow[swap, shift right=0.5ex]{ur}{\bQ^{\T}}
+\end{tikzcd}
+\]
+Каждая стрелка соответствует линейному отображению с матрицей мараметров, указанной на диаграмме.
+Необходимо найти линейное отображение из пространства объектов в пространство ответов. 
+Данное отображение соответствует модели~\eqref{eq::model}. 
+Алгоритм PLS находит в латентном пространстве матрицу $\bT \in \mathbb{R}^{m \times l}$, наилучшим образом описывающую исходные матрицы $\bX$ и $\bY$.
+
+Матрица объектов $\bX$ и матрица ответов $\bY$ проецируются на латентное пространство следующим образом:
 
 \begin{align}
-\label{pls_x_y}
- \underset{m \times n}{\vphantom{\bQ}\bX} &= \underset{m \times l}{\vphantom{\bQ}\bT} \cdot \underset{l \times n}{\vphantom{\bQ}\bP^{\T}} + \underset{m \times n}{\vphantom{\bQ}\bE},\\
- \underset{m \times r}{\vphantom{\bQ}\bY} &= \underset{m \times l}{\vphantom{\bQ}\bU} \cdot \underset{l \times r}{\bQ^{\T}} + \underset{m \times r}{\vphantom{\bQ}\bF},
+\label{eq::PLS_X}
+ \underset{m \times n}{\vphantom{\bQ}\bX} 
+ &= \underset{m \times l}{\vphantom{\bQ}\bT} \cdot \underset{l \times n}{\vphantom{\bQ}\bP^{\T}} + \underset{m \times n}{\vphantom{\bQ}\bE} 
+ = \sum_{k=1}^l \underset{m \times 1}{\vphantom{\bp_k^{\T}}\bt_k} \cdot \underset{1 \times n}{\bp_k^{\T}} + \underset{m \times n}{\vphantom{\bp_k^{\T}}\bE},\\
+ \label{eq::PLS_Y}
+ \underset{m \times r}{\vphantom{\bQ}\bY} 
+ &= \underset{m \times l}{\vphantom{\bQ}\bT} \cdot \underset{l \times r}{\bQ^{\T}} + \underset{m \times r}{\vphantom{\bQ}\bF}
+ =  \sum_{k=1}^l  \underset{m \times 1}{\vphantom{\bq_k^{\T}}\bt_k} \cdot \underset{1 \times r}{\bq_k^{\T}} +  \underset{m \times r}{\vphantom{\bq_k^{\T}}\bF},
 \end{align}
-где $\bT,\ \bU$~--- матрицы объектов и ответов в латентном пространстве~$\mathbb{Z}$, причём $\bT^{\T} \bT = \bI_{l}$; $\bP,\ \bQ$~--- матрицы перехода из пространства $\mathbb{Z}$ в  исходные пространства $\mathbb{X}$ и $\mathbb{Y}$; $\bE,\ \bF$~--- матрицы невязок. 
-Матрицы $\bT,\ \bU$ являются матрицами объектов и ответов в спроектированном пространстве; $\bP,\ \bQ$~--- матрицы перехода из нового пространства в старое; $\bE,\ \bF$~--- матрицы невязок. 
+где $\bT$~--- матрица совместного описания объектов и ответов в латентном пространстве, причём $\bT^{\T} \bT = \bI_{l}$; $\bP,\ \bQ$~--- матрицы перехода из латентного пространства в  исходные пространства; $\bE,\ \bF$~--- матрицы невязок. 
 
-Схема алгоритма PLS изображена на Рис.~\ref{fig::PLSscheme}. Необходимо найти линейное отображение из пространства $\mathbb{X}$ в пространство $\mathbb{Y}$. Алгоритм PLS отображает исходные пространства в общее латентное пространство $\mathbb{Z}$. При этом алгоритм не только находит наилучшее приближение матриц $\bX$ и $\bY$, но и учитывает их взаимосвязь в новом пространстве.
+Псевдокод метода регрессии PLS приведен в алгоритме~\ref{PLSR_code}. Алгоритм итеративно на каждом из $l$ шагов вычисляет по одному столбцу $\bt_k$, $\bp_k$, $\bq_k$ матриц $\bT$, $\bP$, $\bQ$ соответственно. После вычисления следующего набора векторов из матриц $\bX$, $\bY$ вычитаются очередные одноранговые аппроксимации. 
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.4\linewidth]{figs/PLSscheme.pdf}
-	\caption{Схема алгоритма PLS}
-	\label{fig::PLSscheme}
-\end{figure}
+\begin{algorithm}[h]
+\caption{Алгоритм PLSR}
+\label{PLSR_code}
+\begin{algorithmic}[1]
+	\REQUIRE $\bX, \bY, l$;
+	\ENSURE $\bT, \bP, \bQ$;
+	\STATE нормировать матрицы $\bX$ и $\bY$
+	\STATE инициализировать $\bu_0$ (первый столбец матрицы $\bY$)
+	\STATE $\bX_1 = \bX; \bY_1 = \bY$
+	\FOR{$k=1,\dots, l$}
+	\REPEAT
+	\vspace{0.1cm}
+	\STATE $\bw_k := \bX_k^{\T} \bu_{k-1} / (\bu_{k-1}^{\T} \bu_{k-1}); \quad \bw_k: = \frac{\bw_k}{\| \bw_k \|}$
+	\vspace{0.1cm}
+	\STATE $\bt_k := \bX_k \bw_k$
+	\vspace{0.1cm}
+	\STATE $\bc_k := \bY_k^{\T} \bt_k / (\bt_k^{\T} \bt_k); \quad \bc_k: = \frac{\bc_k}{\| \bc_k \|}$
+	\vspace{0.1cm}
+	\STATE $\bu_k := \bY_k \bc_k$
+	\UNTIL{$\bt_k$ не стабилизируется}
+	\vspace{0.1cm}
+	\STATE $\bp_k:= \bX_k^{\T}\bt_k/(\bt_k^{\T}\bt_k),\ 
+	\bq_k := \bY_k^{\T}\bt_k/(\bt_k^{\T}\bt_k)$
+	\vspace{0.2cm}
+	\STATE $\bX_{k+1} :=  \bX_k - \bt_k \bp_k^{\T}$
+	\vspace{0.2cm}
+	\STATE $\bY_{k + 1} :=  \bY_k - \bt_k \bq_k^{\T}$ 
+	\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+Вектора $\bt_k$ и $\bu_k$ из внутреннего цикла алгоритма~\ref{PLSR_code}
+содержат информацию о матрице объектов $\bX$ и матрице ответов $\bY$ соответственно. \textit{Использование вектора $\bt_k$ при вычислении вектора $\bu_k$ и наоборот позволяет извлечь взаимосвязь.}
 
-Псевдокод метода регрессии PLS приведен в алгоритме~\ref{PLSR_pseudo}. Алгоритм итеративно на каждом из $l$ шагов вычисляет по одному столбцу $\bt_k$, $\bu_k$, $\bp_k$, $\bq_k$ матриц $\bT$, $\bU$, $\bP$, $\bQ$ соответственно. Предполагается, что вектора новых признаков $\bt_k$ и $\bu_k$ являются линейными комбинациями столбцов матриц $\bX$ и $\bY$ соответственно.
+Теоретическое обоснование алгоритма PLS следует из следующих утверждений.
+\begin{statement}
+Наилучшее описание матриц $\bX$ и $\bY$ с учётом их взаимосвязи достигается при максимизации ковариации между векторами $\bt_k$ и $\bu_k$. 
 
-Теоретическое обоснование алгоритма PLS следует из следующих теорем.
-\begin{theorem}
-Целью алгоритма является максимизация ковариации между векторами $\bt_k$ и $\bu_k$. Этим достигается наилучшее описание пространств матриц $\bX$ и $\bY$, а также их взаимной связи
+Утверждение следует из следующего равенства
 \[
 	\text{cov} (\bt_k, \bu_k) = \text{corr} (\bt_k, \bu_k) \cdot \sqrt{\text{Var}(\bt_k)} \cdot \sqrt{\text{Var}(\bu_k)}.
 \]
+Максимизация дисперсий векторов $\bt_k$ и $\bu_k$ сохраняет информацию об исходных матрицах, 
+корреляция отвечает взаимосвязи между $\bX$ и $\bY$.
+\end{statement}
+Во внутреннем цикле алгоритма вычисляются вектора $\bw_k$ и $\bc_k$. Из данных векторов строятся матрицы $\bW$ и $\bC$ соответственно.
+\begin{statement}
+Обновление векторов по шагам (6)--(9) алгоритма~\ref{PLSR_code} соответствует максимизации ковариации между векторами $\bt_k$ и $\bu_k$
+\begin{align*}
+\max_{\bt_k, \bu_k}  \text{cov} (\bt_k, \bu_k)^2 &= \max_{\substack{\|\bw_k\|=1 \\ \|\bc_k\| = 1}} \text{cov} \left( \bX_k \bw_k, \bY_k \bc_k \right)^2 = \max_{\substack{\|\bw_k\|=1 \\ \|\bc_k\| = 1}} \text{cov} \left(\bc_k^{\T}  \bY_k^{\T} \bX_k \bw_k \right)^2 = \\
+&= \max_{\|\bw_k\| = 1} \text{cov} \left\|\bY_k^{\T} \bX_k \bw_k \right\|^2 = \max_{\|\bw_k\| = 1} \bw_k^{\T} \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_k = \\
+& = \lambda_{\max} \left( \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \right),
+\end{align*}
+где $ \lambda_{\max} (\cdot)$~--- максимальное собственное значение матрицы.
+\end{statement}
 
-\end{theorem}
-Во внутреннем цикле алгоритма вычисляются вектора $\bw_k$ и $\bc_k$. Из данных векторов строятся матрицы $\bW$ и $\bC$ соответственно
+\begin{statement}
+В результате выполнения внутреннего цикла вектора $\bw_k$ и $\bc_k$ будут являться собственными векторами матриц $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ и $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, соответствующими максимальным собственным значениям.
+
 Вектора $\bw_k$, $\bc_k$ являются собственными векторами матриц $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ и $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$ соответственно
 
 \begin{equation*}
-    \bw_k \varpropto \bX_k^{\T} \bu_k = \bX_k^{\T} \bY_k \bc_k \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bt_k = \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_k,
+\bw_k \varpropto \bX_k^{\T} \bu_k \varpropto \bX_k^{\T} \bY_k \bc_k \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bt_k \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_k,
 \end{equation*}
 \begin{equation*}
-    \bc_k \varpropto \bY_k^{\T} \bt_k = \bY_k^{\T} \bX_k \bw_k \varpropto \bY_k^{\T} \bX_k \bX_k^{\T} \bu_k = \bY_k^{\T} \bX_k \bX_k^{\T} \bY_k \bc_k.
+\bc_k \varpropto \bY_k^{\T} \bt_k \varpropto \bY_k^{\T} \bX_k \bw_k \varpropto \bY_k^{\T} \bX_k \bX_k^{\T} \bu_k \varpropto \bY_k^{\T} \bX_k \bX_k^{\T} \bY_k \bc_k,
 \end{equation*}
-\begin{theorem}
-Правила обновления векторов $\bw_k$, $\bc_k$ совпадают с итерацией алгоритма поиска максимального собственного значения~\cite{Mises1929}. В результате выполнения внутреннего цикла вектора $\bw_k$ и $\bc_k$ будут являться собственными векторами матриц $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ и $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, соответствующими максимальным собственным значениям.
-\end{theorem}
-\begin{theorem}
-Обновляя вектора по данным правилам, мы максимизируем ковариацию между векторами $\bt_k$ и $\bu_k$
-\begin{align*}
-    \max_{\bt_k, \bu_k}  \text{cov} (\bt_k, \bu_k)^2 &= \max_{\substack{\|\bw_k\|=1 \\ \|\bc_k\| = 1}} \text{cov} \left( \bX_k \bw_k, \bY_k \bc_k \right)^2 = \max_{\substack{\|\bw_k\|=1 \\ \|\bc_k\| = 1}} \text{cov} \left(\bc_k^{\T}  \bY_k^{\T} \bX_k \bw_k \right)^2 = \\
-    &= \max_{\|\bw_k\| = 1} \text{cov} \left\|\bY_k^{\T} \bX_k \bw_k \right\|^2 = \max_{\|\bw_k\| = 1} \bw_k^{\T} \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_k = \\
-    & = \lambda_{\max} \left( \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \right).
-\end{align*}
-\end{theorem}
-После завершения внутреннего цикла вычисляются вектора $\bp_k$, $\bq_k$ проецированием столбцов матриц $\bX_k$ и $\bY_k$ на вектора $\bt_k$ и $\bu_k$. Для перехода на следующий шаг необходимо вычесть из матриц $\bX_k$ и $\bY_k$ одноранговые аппроксимации $\bt_k \bp_k^{\T}$ и $\bt_k \bc_k^{\T}$
+где символ $\varpropto$ означает равенство с точностью до мультипликативной константы. 
+Утверждение следует из того факта, что правила обновления векторов $\bw_k$, $\bc_k$ совпадают с итерацией алгоритма поиска максимального собственного значения~\cite{Mises1929}.
+\end{statement}
+
+После завершения внутреннего цикла вычисляются вектора $\bp_k$, $\bq_k$ проецированием столбцов матриц $\bX_k$ и $\bY_k$ на вектор $\bt_k$. Для перехода на следующий шаг необходимо вычесть из матриц $\bX_k$ и $\bY_k$ одноранговые аппроксимации $\bt_k \bp_k^{\T}$ и $\bt_k \bq_k^{\T}$
 \begin{equation*}
     \bX_{k + 1} = \bX_{k-1} - \bt_k \bp_k^{\T} = \bX - \sum_k \bt_k \bp_k^{\T},
 \end{equation*}
 \begin{equation*}
-    \bY_{k + 1} = \bY_{k-1} - \bt_k \bc_k^{\T} = \bY - \sum_k \bt_k \bc_k^{\T},
+    \bY_{k + 1} = \bY_{k-1} - \bt_k \bq_k^{\T} = \bY - \sum_k \bt_k \bq_k^{\T},
 \end{equation*}
-где матрицы с нижним индексом $k$ составленны из $k$ первых векторов, соответственно.
-Выражения для регрессии матрицы $\bX$ и матрицы $\bY$ на полученные ортогональные вектора $\bt_1, \dots, \bt_k$
-\begin{equation*}
-    \bX = \sum_k \bt_k \bp_k^{\T} + \bX_{k + 1} = \bT_k \bP_k^{\bT} + \bX_{k + 1},
-\end{equation*}
-\begin{equation*}
-    \bY = \sum_k \bt_k \bc_k^{\T} + \bY_{k + 1} = \bT_k \bC_k^{\T} + \bY_{k + 1}.
-\end{equation*}
+Этим обеспечивает факт того, что каждый следующий вектор $\bt_k$ оказывается ортогонален всем векторам $\bt_i$, $i=1, \dots, k$.
 
-Для перехода из пространства $\bX$ в пространство $\bT$ применяется линейное преобразование
+На Рис.~\ref{fig::PLSFigure} продемонстрирован результат работы алгоритма PLS для случая, когда размерности пространст объектов, ответов и латентного пространства равны 2 ($n = r = l = 2$).
+Синими и зелёными точками изображены матрицы $\bX$ и $\bY$. 
+Точки были сгенерированы из нормального распределения с нулевым мат. ожиданием. 
+Красным контуром показаны линии уровня матриц ковариаций распределений. 
+Черным проведены единичные окружности. 
+Красные стрелки соответствуют главным компонентам. 
+Черные стрелки соответствуют векторам матриц $\bW$ и $\bC$ алгоритма PLS. 
+Вектора $\bt_k$ и $\bu_k$ равны проекциям матриц $\bX_k$ и $\bY_k$ на вектора $\bw_k$ и $\bc_k$ соответственно. 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{figs/PLSFigure.pdf}
+	\caption{Иллюстрация алгоритма PLS}
+	\label{fig::PLSFigure}
+\end{figure}
+
+Домножим справа формулу~\eqref{eq::PLS_X} на матрицу $\bW$. Строки матрицы невязок $\bE$ ортогональны столбцам матрицы $\bW$, поэтому 
 \[
-	\bT = \bX \bW (\bP^{\T} \bW)^{-1}.
-\]
+	\bX \bW = \bT \bP^{\T} \bW.
+\] 
+Линейное преобразование между объектами в исходном и латентном пространстве имеет вид
+\begin{equation}
+	\bT = \bX \bW^*,
+	\label{eq::W*}
+\end{equation}
+где $\bW^* = \bW (\bP^{\T} \bW)^{-1}$. Аналогичным образом может быть получена матрица перехода из пространства ответов в латентное пространство $\bC^* = \bC (\bQ^{\T} \bC)^{-1}$.
 
-Для нахождения коэффициентов регрессии $\bB$ преобразуем полученное за $l$ шагов алгоритма выражение для регрессии матрицы $\bY$ в предположении, что $\bY_{l + 1}$ является матрицей невязки, 
+Матрица параметров модели~\ref{eq::model} находится из уравнений~\eqref{eq::PLS_Y},~\eqref{eq::W*}
 \begin{equation*}
-    \bY = \bT \bC^{\T} + \bY_{l + 1} = \bX \bW (\bP^{\T} \bW)^{-1} \bC^{\T} + \bY_{l + 1} = \bX \bB + \bY_{l + 1}.
+    \bY = \bT \bQ^{\T} + \bF = \bX \bW^* \bQ^{\T} + \bF = \bX \bTheta + \bF.
 \end{equation*}
 Таким образом, 
 \begin{equation*}
-    \bB = \bW (\bP^{\T} \bW)^{-1} \bC^{\T}.
+    \bTheta = \bW (\bP^{\T} \bW)^{-1} \bQ^{\T}.
 \end{equation*}
 
-\begin{center}
-\begin{algorithm}[h]
-\caption{Алгоритм PLSR}
-    \label{PLSR_pseudo}
-\begin{algorithmic}[1]
-\REQUIRE $\bX, \bY, l$;
-\ENSURE $\bT, \bU, \bP, \bQ$;
-\STATE нормировать матрицы $\bX$ и $\bY$
-\STATE инициализировать $\bu_1$ (первый столбец матрицы $\bY$)
-\STATE $\bX_1 = \bX; \bY_1 = \bY$
-\FOR{$k=1,\dots, l$}
-  \REPEAT
-  \vspace{0.1cm}
-    \STATE $\bw_k := \bX_k^{\T} \bu_k / (\bu_k^{\T} \bu_k); \quad \bw_k: = \frac{\bw_k}{\| \bw_k \|}$
-    \vspace{0.1cm}
-    \STATE $\mathbf{t_k} := \bX_k \bw_k$
-    \vspace{0.1cm}
-    \STATE $\bc_k := \bY_k^{\T} \bt_k / (\bt_k^{\T} \bt_k)$
-    \vspace{0.1cm}
-    \STATE $\bu_k := \bY_k \bc_k/ (\bc_k^{\T} \bc_k)$
-  \UNTIL{$\bt_k$ не стабилизируется}
-  \vspace{0.1cm}
-  \STATE $\bp_k:= \bX_k^{\T}\bt_k/(\bt_k^{\T}\bt_k),\ \bq_k := \bY_k^{\T}\bu_k/(\bu_k^{\T}\bu_k)$
-  \vspace{0.2cm}
-  \STATE $\bX_{k+1} := \bX_k - \bt_k \cdot \left(\frac{\bX_k^{\T} \bt_k}{\bt_k^{\T} \bt_k}\right)^{\T}$
-  \vspace{0.2cm}
-  \STATE $\bY_{k + 1} := \bY_k - \bt_k \cdot \left(\frac{\bY_k^{\T} \bt_k}{\bt_k^{\T} \bt_k}\right)^{\T}$ 
-\ENDFOR
-\end{algorithmic}
-\end{algorithm}
-\end{center}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
 \section{Модификация метода частных наименьших квадратов (cnlPLS)}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Предлагается провести модификацию алгоритма PLS: совершить криволинейное и нелинейное преобразования пространства целевой переменной  и независимой переменной для учета мультиколлинеарности между значениями сигнала в различные моменты времени. Схема модифицированного алгоритма представлена на рис.~\ref{scheme_cnlPLS}. 
-После применения к исходным матрицам $\bX$ и $\bY$ нелинейных преобразований $F_x$ и $F_y$ соответственно используется линейный алгоритм метода частных наименьших квадратов.
+Предлагается провести модификацию алгоритма PLS: применить нелинейные параметрические преобразования пространства объектов и ответов для выявления сложных зависимостей.
 
-%FIGURE 2
+\begin{align}
+\label{eq::PLS_X}
+\tilde \bX
+= F_x(\bX, \bv_x)
+&= \bT\cdot \bP^{\T} + \bE\\
+\label{eq::PLS_Y}
+\tilde \bY
+ = F_y(\bY, \bv_y) 
+&= \bT\cdot \bQ^{\T} + \bF,
+\end{align}
 
-\tikzstyle{sensor_x}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=3em]
-\tikzstyle{sensor_t}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2em]
-\tikzstyle{sensor_p}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=3em]
-\tikzstyle{sensor_y}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=5em, text width=2.5em]
-\tikzstyle{sensor_q}=[draw, line width=0.3mm, fill=blue!0, text centered, minimum height=2em, text width=2.5em]
-
-\hspace{1cm}
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}
-    \node (x) [sensor_x]  {$\tilde \bX$};
-    \node[sensor_x, left of = x, node distance=7.5em] (x_init) {$\bX$};
-    % \arrow{x_init,x}{h_y(\breve \bY)}
-    \node[right of = x_init, node distance=3.7em] (x_trans) {$\overset{F_x(\bX, \bv_x)}{\longrightarrow}$};
-    \node[right of = x, node distance=3em] (x_equal) {=};
-    \node[sensor_t, right of = x_equal, node distance=2.5em] (t) {$\bT$};
-    \node[right of = t, node distance=2.5em] (x_times) {$\times$};
-    \node[sensor_p, right of = x_times, node distance=2.8em] (p) {$\bP^{\T}$};
-    \node[right of = p, node distance=2.8em] (x_sum) {+};
-    \node[sensor_x, right of = x_sum, node distance=2.8em] (e) {$\bE$};
-    % \node[below of = x, node distance=3.5em] (x_size) {\footnotesize{$m\times n$}};
-    % \node[below of = t, node distance=3.5em] (t_size) {\footnotesize{$m\times l$}};
-    % \node[below of = p, node distance=2.3em] (p_size) {\footnotesize{$l\times n$}};
-    % \node[below of = e, node distance=3.5em] (e_size) {\footnotesize{$m\times n$}};
-
-    \node[below of = x_init, node distance=7em] (y_init) [sensor_y]  {$\bY$};
-    \node[below of = x_trans, node distance=7em] (y_trans) {$\overset{F_y(\bY, \bv_y)}{\longrightarrow}$};
-    \node[below of = x, node distance=7em] (y) [sensor_y]  {$\tilde \bY$};
-    \node[below of = x_equal, node distance=7em] (y_equal) {=};
-    \node[sensor_t, below of = t, node distance=7em] (u) {$\bU$};
-    \node[below of = x_times, node distance=7em] (y_times) {$\times$};
-    \node[sensor_q, below of = p, node distance=7em] (q) {$\bQ^{\T}$};
-    \node[below of = x_sum, node distance=7em] (y_sum) {+};
-    \node[sensor_y, below of = e, node distance=7em] (f) {$\bF$};
-\end{tikzpicture}
-\caption{Размерности векторов в алгоритме cnlPLS}
-\label{scheme_cnlPLS}
-\end{figure}
-
-
-% FIGURE 2 OLD
-
-% \tikzstyle{sensor_x}=[draw, fill=blue!0, text width=4em, 
-%     text centered, minimum height=5em]
-% \tikzstyle{sensor_y}=[draw, fill=blue!0, text width=2.7em, 
-%     text centered, minimum height=5em]
-% \begin{figure}[H]
-% \centering
-% {\footnotesize
-% \def\blockdist{2.3}
-% \def\edgedist{2.5}
-% \vspace{1cm}
-% \hspace{1cm}
-% \begin{tikzpicture}
-
-%     \node (x) [sensor_x]  {$\bX$};
-%     \path (x.south)+(0,-2) node (tilde_x) [sensor_x] {$\tilde \bX$};
-%     \path (x.east)+(4,0) node (y) [sensor_y] {$\bY$};
-%     \path (y.south)+(0,-2) node (tilde_y) [sensor_y] {$\tilde \bY$};
-%     \path (tilde_x.south)+(0,-0.8) node (x_form) {$\tilde \bX = \bT \bP^{T} + \bE$};
-%     \path (tilde_y.south)+(0.4,-0.8) node (y_form) {$\tilde \bY = \bU \bQ^{\T} + \bF$};
-%     \path (tilde_x.south)+(2.5,-1.3) node (u_form) {$\bU \approx \bT \bD$};
-
-
-%     \path [draw, ->] (x.south) -- node [right] {$F_x(\bX, \bv_x)$} 
-%         (tilde_x.north);
-%     \path [draw, ->] (y.south) -- node [right] {$F_y(\bY, \bv_y)$} 
-%         (tilde_y.north);
-%     %tilde X
-%     \path [draw, -] +(1,-2) -- node [right] {$\bt$}
-%       +(1,-3.7);
-%     \path [draw, -] +(0.8,-3.9) -- node [below] {$\bp$}
-%       +(-0.8,-3.9); 
-%     %tilde Y
-%     \path [draw, -] +(4.05,-2) -- node [left] {$\bu$}
-%       +(4.05,-3.7);
-%     \path [draw, -] +(4.2,-3.9) -- node [below] {$\bq$}
-%       +(5.4,-3.9);
-
-%     \path [draw, ->] +(0.79,-3.77) -- node [above] {$\bw$}
-%       +(2.31,-4.8);
-%     \path [draw, ->] +(4.21,-3.77) -- node [above] {$\bc$}
-%       +(1.9,-4.8);
-% \end{tikzpicture}
-% }
-% \caption{Схема модифицированного метода частных наименьших квадратов}
-% \label{scheme_cnlPLS}
-% \end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Нелинейные преобразования}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     Рассматриваются нелинейное параметрическое преобразование пространства зависимой переменной $\bY$
     и независимой переменной $\bX$ (примеры преобразований представлены в табл.~\ref{table_functions}). Преобразование и вектор параметров, относящиеся к зависимой переменной и независимой переменной, обозначим соответственно $F_y(\bY, \bv_y)$ и $F_x(\bX, \bv_y)$ и введем переменные для преобразованных пространств
@@ -391,30 +351,6 @@
     \label{transf}
         \tilde \bY = F_y (\bY, \bv_y),\quad \tilde \bX = F_x(\bX, \bv_x).
     \end{equation}  
-
-    % $\begin{diagram}
-    % \node{\bY}
-    % \arrow{e,t}{g_y(\bY, \bv_y)}
-    % \node{\breve \bY}
-    % \arrow{e,t}{h_y(\breve \bY)}
-    % \node{\tilde \bY}
-    % \end{diagram}$
- 
-% \begin{table}
-% \centering
-% \begin{tabular}{l|l|l|l|}
-% \cline{2-4}
-%   & \textbf{Функция}                                 & \textbf{Параметры} & \textbf{Обратная}                                             \\ \cline{2-4} 
-% 1 & $g(x) = \sign(x)\exp(a)(\exp(b|x|) - 1$          & $a, b > 0$         & $g^{-1}(y) = \sign(y) \exp(-b)\log(|y| \exp(-a) + 1)$         \\ \cline{2-4} 
-% 2 & $g(x) = \sign(x)\exp(a)(\exp(b\ln(1+ \,|x|) - 1$ & $a, b > 0$         & $g^{-1}(y) = \sign(y)\exp( \exp(-b)\log(|y| \exp(-a) + 1)-1)$ \\ \cline{2-4} 
-% 3 & $g(x) = \sign(x)\exp(a)(\exp(b|x|^{1/2}) - 1$    & $a, b > 0$         & $g^{-1}(y) = \sign(y) (\exp(-b)\log(|y| \exp(-a) + 1))^2$     \\ \cline{2-4} 
-% 4 & $g(x) = \sign(x)\exp(a)(\exp(b|x|^{1/3}) - 1$    & $a, b > 0$         & $g^{-1}(y) = \sign(y) (\exp(-b)\log(|y| \exp(-a) + 1))^3$     \\ \cline{2-4} 
-% 5 & $g(x) = \sign(x)\exp(a)(\exp(b|x|^{1/4}) - 1$    & $a, b > 0$         & $g^{-1}(y) = \sign(y) (\exp(-b)\log(|y| \exp(-a) + 1))^4$     \\ \cline{2-4} 
-% 6 & $g(x) = \sign(x)\exp(a)(\exp(b|x|^{2}) - 1$      & $a, b > 0$         & $g^{-1}(y) = \sign(y) (\exp(-b)\log(|y| \exp(-a) + 1))^{1/2}$ \\ \cline{2-4} 
-% \end{tabular}
-% \caption{Криволинейные преобразования}
-% \label{table_functions}
-% \end{table}
 
 Функции для криволинейных преобразований удовлетворяют следующим условиям:
 \begin{itemize}
@@ -474,32 +410,7 @@ $$
     \Delta \bv_x  = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} (\bt - \bt_0).
 \end{align*}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Преобразование независимой переменной}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Аналогично преобразованию целевой переменной $\bY$, совершается преобразование зависимой переменной $\bX$ для учета мультиколлинеарности в признаковом пространстве. 
-
-    % Рассмотрим преобразования $\bX$
-    % \begin{itemize} 
-    % \item криволинейное с вектором параметров $\bv$ (табл.~\ref{table_functions})
-    % \begin{equation}
-    % \label{transF_y}
-    %     \breve \bX = g_x (\bX, \bv_x),
-    % \end{equation}
-    % \item нелинейное непараметрическое преобразование
-    % \begin{equation*}
-    %     \hat \bX = h_x (\bX),
-    % \end{equation*}
-    % \item суперпозиция преобразований 
-    % \begin{equation*}
-    %     \tilde \bX = h_x (\breve \bX) = h_x( g_x( \bX, \bv_x)) = F_x(\bX, \bv_x).
-    % \end{equation*}
-    % \end{itemize}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Алгоритм cnlPLSR}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 В данном разделе представлен модифицированный метод PLSR, содержащий шаги преобразования целевой переменной. Аналогично методу PLSR (алгоритм~\ref{PLSR_pseudo}), алгоритм \ref{cnlPLSR_pseudo} начинается с инициализации вектора $\bu$, а обновления весов преобразования считается с помощью рассогласования $\be$ для вектора $\bu$, вычисленного в цикле и на предыдущей итерации.
 \vspace{-0.5cm}
 
@@ -509,43 +420,39 @@ $$
     \label{cnlPLSR_pseudo_x}
 \begin{algorithmic}[1]
 \REQUIRE $\bX, \bY, l$;
-\ENSURE $\bT, \bU, \bP, \bQ, \bv_x, \bv_y$;
+\ENSURE $\bT, \bP, \bQ, \bv_x, \bv_y$;
 \STATE инициализировать $\bv_x$ и $\bv_y$
-\STATE $\bT := \bU := \bP := \bQ := \emptyset$
+\STATE нормировать матрицы $\bX, \bY$
+\STATE $\bX_1 = \bX; \bY_1 = \bY$
 \FOR{$k=1,\dots, l$}
-\STATE инициализировать $\bt$ (первый столбец матрицы $\bX$)
-\STATE инициализировать $\bu$ (первый столбец матрицы $\bY$)
+\STATE инициализировать $\bt_0$ (первый столбец матрицы $\bX$)
+\STATE инициализировать $\bu_0$ (первый столбец матрицы $\bY$)
   \REPEAT
-  \STATE $\bt_0 := \bt$, $\bu_0 = \bu$
   \vspace{0.1cm}
-    \STATE $\tilde \bX := F_x(\bX, \bv_x); \quad \tilde \bY = F_y(\bY, \bv_y)$
+    \STATE $\tilde \bX_k := F_x(\bX_k, \bv_x); \quad \tilde \bY_k = F_y(\bY_k, \bv_y)$
     \vspace{0.1cm}
-    \STATE $\bw := \tilde \bX^{\T} \bu / (\bu^{\T} \bu); \quad \bw: = \frac{\bw}{\|\bw \|}$
-    \STATE $\bt := \tilde \bX \bw$
+    \STATE $\bw_k := \tilde \bX_k^{\T} \bu_{k-1} / (\bu_{k-1}^{\T} \bu_{k-1}); \quad \bw_k: = \frac{\bw_k}{\|\bw_k \|}$
+    \STATE $\bt_k := \tilde \bX_k \bw_k$
     \vspace{0.1cm}
-    \STATE $\Delta \bv_x = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} (\bt - \bt_0)$, где $\bJ_t := \frac{\partial \bt}{\partial \bv_x}$
+    \STATE $\Delta \bv_x = (\bJ_t^{\T} \bJ_t)^{-1} \bJ_t^{\T} (\bt_k - \bt_{k-1})$, где $\bJ_t := \frac{\partial \bt_k}{\partial \bv_x}$
     \vspace{0.1cm}
     \STATE $\bv_x := \bv_x + \Delta \bv_x$
     \vspace{0.1cm}
-    \STATE $\bc := \tilde \bY^{\T} \bt / (\bt^{\T} \bt); \quad \bc: = \frac{\bc}{\| \bc \|}$ 
-    \STATE $\bu := \tilde \bY \bc$
+    \STATE $\bc_k := \tilde \bY_k^{\T} \bt_k / (\bt_k^{\T} \bt_k); \quad \bc_k: = \frac{\bc_k}{\| \bc_k \|}$ 
+    \STATE $\bu_k := \tilde \bY_k \bc_k$
     \vspace{0.1cm}
-    \STATE $\Delta \bv_y = (\bJ_u^{\T} \bJ_u)^{-1} \bJ_u^{\T} (\bu - \bu_0)$, где $\bJ_u := \frac{\partial \bu}{\partial \bv_y}$
+    \STATE $\Delta \bv_y = (\bJ_u^{\T} \bJ_u)^{-1} \bJ_u^{\T} (\bu_k - \bu_{k-1})$, где $\bJ_u := \frac{\partial \bu_k}{\partial \bv_y}$
     \vspace{0.1cm}
     \STATE $\bv_y := \bv_y + \Delta \bv_y$
-  \UNTIL{$\bt$ не стабилизируется}
+  \UNTIL{$\bt_k$ не стабилизируется}
    \vspace{0.1cm}
- \STATE $\bT := \text{concat}[\bT; \bt]$; $\bU := \text{concat}[\bU; \bu]$
+ \STATE $\bp_k := \tilde \bX_k^{\T}\bt_k/(\bt_k^{\T}\bt_k),\ \bq_k := \tilde \bY_k^{\T}\bt_k/(\bt_k^{\T}\bt_k)$
  \vspace{0.1cm}
- \STATE $\bp := \tilde \bX^{\T}\bt/(\bt^{\T}\bt),\ \bq := \tilde \bY^{\T}\bu/(\bu^{\T}\bu)$
+ \STATE $\tilde \bX_k := \tilde  \bX_k - \bt_k \bp_k^{\T}$
  \vspace{0.1cm}
- \STATE $\bP:= \text{concat}[\bP; \bp]$; $\bQ := \text{concat}[\bQ; \bq]$
+ \STATE $\tilde \bY_k := \tilde  \bY_k - \bt_k\bq_k^{\T}$ 
  \vspace{0.1cm}
- \STATE $\tilde \bX := \tilde  \bX - \bt \bp^{\T}$
- \vspace{0.1cm}
- \STATE $\tilde \bY := \tilde  \bY - \bt\bc^{\T}$ 
- \vspace{0.1cm}
-  \STATE $\bX = F_x^{-1}(\tilde \bX, \bv_x)$; $\bY = F_y^{-1}(\tilde \bY, \bv_y)$
+  \STATE $\bX_k = F_x^{-1}(\tilde \bX_k, \bv_x)$; $\bY_k = F_y^{-1}(\tilde \bY_k, \bv_y)$
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
