@@ -87,7 +87,6 @@ def _nipals_twoblocks_inner_loop(X, Y, x_kind='linear', y_kind='linear',
             delta_x_params = np.linalg.inv(J_t.T.dot(J_t)).dot(J_t.T).dot(x_score - x_score_old)[:, 0]
 # STEP 12
             x_params += learning_rate * delta_x_params
-            print delta_x_params
         # 2.1 Update y_weights
         # Mode A regress each Y column on x_score
 # STEP 13
@@ -100,11 +99,9 @@ def _nipals_twoblocks_inner_loop(X, Y, x_kind='linear', y_kind='linear',
         if (y_kind not in NONPARAMETRICAL_TRANSROMATIONS) and flag_first_iter:
             J_u = jacob(Y, y_score, kind=y_kind, params=y_params)
             delta_y_params = np.linalg.inv(J_u.T.dot(J_u)).dot(J_u.T).dot(y_score - y_score_old)[:, 0]
-            print('delta', delta_y_params)
 # STEP 16
             y_params += learning_rate * delta_y_params
         x_weights_diff = x_weights - x_weights_old
-        print(np.dot(x_weights_diff.T, x_weights_diff))
         if np.dot(x_weights_diff.T, x_weights_diff) < tol or Y.shape[1] == 1:
             break
         if ite == max_iter:
