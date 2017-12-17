@@ -172,6 +172,12 @@ The proposed method significantly reduces the dimensionality of the feature spac
 Первым шагом необходимо произвести нормировку столбцов исходных матриц (вычесть среднее и разделить на стандартное отклонение).
 На этапе тестирования необходимо провести нормировку тестовых данных, вычислить предсказание модели~\ref{eq::model}, а затем провести обратную нормировку.
 
+\textcolor{blue}{
+The pseudo-code of the PLS regression method is given in the algorithm~\ref{PLSR_code}.
+The algorithm iteratively on each of the $l$ steps calculates columns $\bt_k$, $\bp_k$, $\bq_k$ of the matrices $\bT$, $\bP$, $\bQ$, respectively. After the computation of the next set of vectors, we have the next one-rank approximations which are subtracted from the matrices $\bX$, $\bY$.
+For the first step it is necessary to make the normalization of the columns of the original matrices (subtract the mean and divide by the standard deviation).
+During the testing phase we need to normalize of the test data, compute the prediction of the model~\ref{eq::model}, and then perform the reverse normalization.}
+
 \begin{algorithm}[h]
 \caption{PLSR algorithm}
 \label{PLSR_code}
@@ -207,11 +213,18 @@ The proposed method significantly reduces the dimensionality of the feature spac
 Блоки из шагов (6)-(7) и шагов (8)-(9)~--- аналоги алгоритма PCA для матриц $\bX$ и $\bY$~\cite{geladi1986partial}. 
 Последовательное выполнение блоков позволяет учесть взаимную связь между матрицами $\bX$ и $\bY$.
 
+\textcolor{blue}{
+Vectors $\bt_k$ and $\bu_k$ of the inner loop of the algorithm~\ref{PLSR_code} contain information about the object matrix $\bX$ and the matrix with answers $\bY$, respectively. 
+The blocks from steps (6)--(7) and steps (8)-(9)~are analogues of the PCA algorithm for the matrices $\bX$ and $\bY$~\cite{geladi1986partial}. 
+Consistent implementation of the blocks allows to take into account the mutual coupling between the matrices $\bX$ and $\bY$.}
+
 Теоретическое обоснование алгоритма PLS следует из следующих утверждений.
+\textcolor{blue}{The theoretical explanation of the PLS algorithm follows from the following statements.}
 \begin{statement}
 Наилучшее описание матриц $\bX$ и $\bY$ с учётом их взаимосвязи достигается при максимизации ковариации между векторами $\bt_k$ и $\bu_k$. 
 \end{statement}
 Утверждение следует из равенства
+\textcolor{blue}{It follows from the equation}
 \[
 \text{cov} (\bt_k, \bu_k) = \text{corr} (\bt_k, \bu_k) \cdot \sqrt{\text{var}(\bt_k)} \cdot \sqrt{\text{var}(\bu_k)}.
 \]
@@ -220,8 +233,13 @@ The proposed method significantly reduces the dimensionality of the feature spac
 
 Во внутреннем цикле алгоритма вычисляются нормированные вектора весов $\bw_k$ и $\bc_k$. Из данных векторов строятся матрицы весов $\bW$ и $\bC$ соответственно.
 
+\textcolor{blue}{
+In the inner loop of the algorithm the normalized weight vectors $\bw_k$ and $\bc_k$ are calculated. From these vectors we construst the matrices $\bW$ and $\bC$, respectively.}
+
 \begin{statement}
 	В результате выполнения внутреннего цикла вектора $\bw_k$ и $\bc_k$ будут собственными векторами матриц $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ и $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, соответствующими максимальным собственным значениям.
+	\textcolor{blue}{
+	As a result of performing the inner loop, the vector $\bw_k$ and $\bc_k$ are eigenvectors of the matrices $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ and $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, corresponding to the maximum eigenvalues.}
 	
 	\begin{equation*}
 	\bw_k \varpropto \bX_k^{\T} \bu_{k-1} \varpropto \bX_k^{\T} \bY_k \bc_{k-1} \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bt_{k-1} \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_{k-1},
@@ -230,21 +248,31 @@ The proposed method significantly reduces the dimensionality of the feature spac
 	\bc_k \varpropto \bY_k^{\T} \bt_k \varpropto \bY_k^{\T} \bX_k \bw_k \varpropto \bY_k^{\T} \bX_k \bX_k^{\T} \bu_{k-1} \varpropto \bY_k^{\T} \bX_k \bX_k^{\T} \bY_k \bc_{k-1},
 	\end{equation*}
 	где символ $\varpropto$ означает равенство с точностью до мультипликативной константы. 
+	\textcolor{blue}{
+	where the symbol $\varpropto$ means equality up to a multiplicative constant.}
 	\label{st::eig}
 \end{statement}
 
 Утверждение следует из того факта, что правила обновления векторов $\bw_k$, $\bc_k$ совпадают с итерацией алгоритма поиска максимального собственного значения. Данный алгоритм основан на следующем факте.
 
-Если матрица $\mathbf{A}$ диагонализуема, $\bx$~--- некоторый вектор, то
+\textcolor{blue}{
+The statement follows from the fact that the update rule for vectors $\bw_k$, $\bc_k$ coincides with the iteration of the search algorithm for the maximum eigenvalue. This algorithm is based on the following fact.}
 
+Если матрица $\mathbf{A}$ диагонализуема, $\bx$~--- некоторый вектор, то
+\textcolor{blue}{
+Let a matrix $\mathbf{A}$ be diagonilized, $\bx$ be some vector, then}
 \[
 	\lim_{k \rightarrow \infty} \mathbf{A}^k \bx = \lambda_{\max}(\mathbf{A}) \cdot \mathbf{v}_{\max},
 \]
-где $ \lambda_{\max} (\mathbf{A})$~--- максимальное собственное значение матрицы $\mathbf{A}$, $\mathbf{v}_{\max}$~---собственный вектор матрицы $\mathbf{A}$, соответствующий $ \lambda_{\max} (\mathbf{A})$.
+где $\lambda_{\max} (\mathbf{A})$~--- максимальное собственное значение матрицы $\mathbf{A}$, $\mathbf{v}_{\max}$~---собственный вектор матрицы $\mathbf{A}$, соответствующий $ \lambda_{\max} (\mathbf{A})$.
+\textcolor{blue}{
+where $ \lambda_{\max} (\mathbf{A})$~is the maximum eigenvalue of the matrix $\mathbf{A}$, $\mathbf{v}_{\max}$~is the eigenvector of the matrix $\mathbf{A}$, corresponding to $ \lambda_{\max} (\mathbf{A})$.}
 $\blacksquare$
 
 \begin{statement}
 Обновление векторов по шагам (6)--(9) алгоритма~\ref{PLSR_code} соответствует максимизации ковариации между векторами $\bt_k$ и $\bu_k$.
+\textcolor{blue}{
+The update rule for the vectors in steps (6)--(9) of the algorithm~\ref{PLSR_code} corresponds to the maximization of the covariance between the vectors $\bt_k$ and $\bu_k$.}
 \end{statement}
 \hrulefill
 
@@ -267,7 +295,9 @@ $\blacksquare$
 \begin{equation*}
     \bY_{k + 1} = \bY_{k} - \bt_k \bq_k^{\T} = \bY - \sum_k \bt_k \bq_k^{\T}.
 \end{equation*}
-Тогда каждый следующий вектор $\bt_k$ оказывается ортогонален всем векторам $\bt_i$, $i=1, \dots, k$.
+Тогда каждый следующий вектор $\bt_k$ \textcolor{red}{$\bt_{k+1}$ ?}оказывается ортогонален всем векторам $\bt_i$, $i=1, \dots, k$.
+\textcolor{blue}{
+Then, each next vector $\bt_{k+1}$ turns out to be orthogonal to all vectors $\bt_i$, $i=1, \dots, k$.}
 
 \hrulefill
 
