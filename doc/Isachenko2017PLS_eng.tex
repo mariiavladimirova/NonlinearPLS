@@ -75,15 +75,15 @@
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Paper investigates the problem of dependence recovering between an input data and a model outcome.
+The paper investigates the problem of dependence recovering between an input data and a model outcome.
 The proposed model is suitable for predicting a multidimensional target variable.
-In the case of the forecasting problem the object and target spaces have the same nature.
+In the case of the forecasting problem objects and target spaces have the same nature.
 To build the model we need to construct autoregressive matrices for input objects and target variables.
 The object is a local signal history, the outcome is signal values in the next timestamps.
 An autoregressive model makes a consumption that the current signal values depend linearly on the previous signal values.
 
-In the case of time series decoding problem the object and target spaces are different in nature, the outcome is a system response to the input signal.
-The autoregressive design matrix contains local history of the input signal.
+In the case of time series decoding problem objects and target spaces are different in nature, the outcome is a system response to the input signal.
+The autoregressive design matrix contains the local history of the input signal.
 The autoregressive target matrix contains the local history of the response.
 
 The object space in time series decoding problems is high dimensional.
@@ -91,7 +91,7 @@ Excessive dimensionality of the feature description leads to instability of the 
 To solve this problem the feature selection procedures are used~\cite{katrutsa2015qpfs,li2016feature}.
 
 The paper considers the partial least squares regression (PLS) model~\cite{wegelin2000survey,abdi2003pls,geladi1986partial}.
-The PLS model reduces the dimension of the input data and extracts the linear combination of features which have the greatest impact on the response vector.
+The PLS model reduces the dimensionality of the input data and extracts the linear combination of features which have the greatest impact on the response vector.
 Feature extraction is an iterative process in order of decreasing the influence on the response vector.
 PLS regression methods are described in detail in~\cite{geladi1988pls, hoskuldsson1988plsr,de1993simpls}.
 The difference between various PLS approaches, different kinds of the PLS regression could be found in~\cite{rosipal2006overview}.
@@ -106,7 +106,7 @@ The proposed method is used on two datasets with the redundant input and target 
 The first dataset consists of hourly time series of energy consumption. 
 Time series were collected in Poland from 1999 to 2004.
 
-The second dataset comes from the NeuroTycho project~\cite{neurotycho} that designs Brain-Computer Interface (BCI)~\cite{millan2010combining,mason2007comprehensive} for information transmitting between brains and electronic devices.
+The second dataset comes from the NeuroTycho project~\cite{neurotycho} that designs Brain-Computer \textcolor{red}{съехало почему-то} Interface (BCI)~\cite{millan2010combining,mason2007comprehensive} for information transmitting between brains and electronic devices.
 Brain-Computer Interface (BCI) system enhances its user’s mental and physical abilities, providing a direct communication mean between the brain and a computer~\cite{millan2004brain}. 
 BCIs aim at restoring damaged functionality of motorically or cognitively impaired patients.
 The goal of motor imagery analysis is to recognize intended movements from the recorded brain activity. 
@@ -114,10 +114,10 @@ While there are various techniques for measuring cortical data for BCI~\cite{nic
 ECoG, as well as other invasive techniques, provides more stable recordings and better resolution in temporal and spatial domains than its non-invasive counterparts.
 We address the problem of continuous hand trajectory reconstruction. 
 The subdural ECoG signals are measured across 32 channels as the subject is moving its hand.
-Once the ECoG signals are transformed into informative features, the problem of trajectory reconstruction is an autoregression problem. 
+Once the ECoG signals are transformed into informative features, the problem of trajectory reconstruction is the autoregression problem. 
 Feature extraction involves application of some spectro-temporal transform to the ECoG signals from each channel~\cite{gasanov2017pls}.
 
-In papers which are devoted to forecasting of complex spatial time series the forecast is built pointwise~\cite{box2015time,zhang2003time}.
+In papers, which are devoted to forecasting of complex spatial time series, the forecast is built pointwise~\cite{box2015time,zhang2003time}.
 If one need to predict multiple points simultaneously, it is proposed to compute forecasted points sequentially.
 During this process the previous predicted values are used to obtain a subsequent ones.
 The proposed method allows to obtain multiple predicted time series values at the same time taking into account hidden dependencies not only in the object space, but also in the target space.
@@ -128,7 +128,7 @@ The proposed method significantly reduces the dimensionality of the feature spac
 \section{Problem statement}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Given the dataset $\mathfrak{D}= \left( \bX, \bY \right)$, where $\mathbf{X} \in \mathbb{R}^{m \times n}$ is a design matrix, $\mathbf{Y} \in \mathbb{R}^{m \times r}$is the target matrix. 
+Given a dataset $\mathfrak{D}= \left( \bX, \bY \right)$, where $\mathbf{X} \in \mathbb{R}^{m \times n}$ is a design matrix, $\mathbf{Y} \in \mathbb{R}^{m \times r}$ is a target matrix. 
 The examples of how to construct the dataset for a particular application task described in the \hyperref[sec:exper]{Computational experiment}.
 
 We assume that there is a linear dependence between the objects $\bx \in \mathbb{R}^n$ and the responses $\by \in \mathbb{R}^r$
@@ -136,7 +136,7 @@ We assume that there is a linear dependence between the objects $\bx \in \mathbb
  \underset{1 \times r}{\by} = \underset{1 \times n}{\vphantom{\by}\bx} \cdot \underset{n \times r}{\vphantom{\by}\bTheta} + \underset{1 \times r}{\vphantom{\by}\boldsymbol{\varepsilon}}, 
 \label{eq::model}
 \end{equation}
-where $\bTheta$ is the matrix of the model parameters, $\boldsymbol{\varepsilon}$ is the vector of residuals.
+where $\bTheta$ is the matrix of model parameters, $\boldsymbol{\varepsilon}$ is the vector of residuals.
 
 The task is to find the matrix of the model parameters $\bTheta$ given the dataset $\mathfrak{D}$.
 The optimal parameters are determined by error function minimization. 
@@ -146,17 +146,17 @@ Define the quadratic error function $S$ for the dataset $\mathfrak{D}$:
 \label{eq::error_function}
 \end{equation}
  
- The linear dependence of the columns of the matrix $X$ leads to instable solution for the optimization problem~\eqref{eq::error_function}. 
+ The linear dependence of the columns of the matrix $X$ leads to an instable solution for the optimization problem~\eqref{eq::error_function}. 
  To avoid the strong linear dependence one could use feature selection techniques.
 
 \section{Partial Least Squares method}
 
-To eliminate the linear dependence and reduce the dimension of the input space the principal components analysis (PCA) is widely used. 
+To eliminate the linear dependence and reduce the dimensionality of the input space, the principal components analysis (PCA) is widely used. 
 The main disadvantage of the PCA method is its insensitivity to the interrelation between the objects and the responses.
-Partial least squares (PLS) algorithm projects the design matrix $\bX$ and the target matrix in latent space $\mathbb{R}^l$ with low dimension ($l < r < n$).
+\textcolor{red}{The} partial least squares (PLS) algorithm projects the design matrix $\bX$ and the target matrix \textcolor{red}{to} \textcolor{red}{the} latent space $\mathbb{R}^l$ with low dimensionality ($l < r < n$).
 The PLS algorithm finds the latent space matrix $\bT \in \mathbb{R}^{m \times l}$ that best describes the original matrices $\bX$ and $\bY$.
 
-The disign matrix $\bX$ and the target matrix $\bY$ is projected into the latent space in the following way:
+The disign matrix $\bX$ and the target matrix $\bY$ \textcolor{red}{are} projected into the latent space in the following way:
 \begin{align}
 \label{eq::PLS_X}
  \underset{m \times n}{\vphantom{\bQ}\bX} 
@@ -167,12 +167,13 @@ The disign matrix $\bX$ and the target matrix $\bY$ is projected into the latent
  &= \underset{m \times l}{\vphantom{\bQ}\bT} \cdot \underset{l \times r}{\bQ^{\T}} + \underset{m \times r}{\vphantom{\bQ}\bE}
  =  \sum_{k=1}^l  \underset{m \times 1}{\vphantom{\bq_k^{\T}}\bt_k} \cdot \underset{1 \times r}{\bq_k^{\T}} +  \underset{m \times r}{\vphantom{\bq_k^{\T}}\bE},
 \end{align}
-is a matrix of joint description of the objects and the outcomes in the latent space, and the columns of the matrix $\bT$ are orthogonal; $\bP,\ \bQ$ are transition matrices from the latent space to the original space; $\bE\ \bF$ are residual matrices.
+\textcolor{red}{where $\bT$} is a matrix of a joint description of the objects and the outcomes in the latent space, and the columns of the matrix $\bT$ are orthogonal; $\bP,\ \bQ$ are transition matrices from the latent space to the original space; $\bE,\ \bF$ are residual matrices.
 
 The pseudocode of the PLS regression algorithm is given in the algorithm~\ref{PLSR_code}.
 In each of the $l$ steps the algorithm iteratively calculates columns $\bt_k$, $\bp_k$, $\bq_k$ of the matrices $\bT$, $\bP$, $\bQ$, respectively. 
-After the computation of the next set of vectors, the one-rank approximations are subtracted from the matrices $\bX$, $\bY$. This step is called matrix deflation.
-The first step one has to normalize the columns of the original matrices (subtract the mean and divide by the standard deviation).
+After the computation of the next set of vectors, the one-rank approximations are subtracted from the matrices $\bX$, $\bY$. 
+This step is called a matrix deflation.
+In the first step one has to normalize the columns of the original matrices (subtract the mean and divide by the standard deviation).
 During the test mode we need to normalize the test data, compute the model prediction~\eqref{eq::model}, and then perform the reverse normalization.
 
 \begin{algorithm}[h]
@@ -212,19 +213,19 @@ Sequential repetition of the blocks takes into account the interaction between t
 
 The theoretical explanation of the PLS algorithm follows from the statements.
 \begin{statement}
-The best description of the matrices $\bX$ и $\bY$ taking into account their interrelation is achieved by maximizion the covariance between the vectors $\bt_k$ и $\bu_k$.
+The best description of the matrices $\bX$ and $\bY$ taking into account their interrelation is achieved by maximizion the covariance between the vectors $\bt_k$ and $\bu_k$.
 \end{statement}
 The statement follows from the equation
 \[
 \text{cov} (\bt_k, \bu_k) = \text{corr} (\bt_k, \bu_k) \cdot \sqrt{\text{var}(\bt_k)} \cdot \sqrt{\text{var}(\bu_k)}.
 \]
-Maximization of variances of the vectors $\bt_k$ и $\bu_k$ correspond to keeping information about original matrices, the correlation of these vectors corresponds to interrelation between $\bX$ и~$\bY$. $\blacksquare$
+Maximization of variances of the vectors $\bt_k$ and $\bu_k$ corresponds to keeping information about original matrices, the correlation of these vectors corresponds to interrelation between $\bX$ and~$\bY$. $\blacksquare$
 
 In the inner loop of the algorithm~\ref{PLSR_code} the normalized weight vectors $\bw_k$ and $\bc_k$ are calculated. 
 These vectors construct the matrices $\bW$ and $\bC$, respectively.
 
 \begin{statement}
-	The vector $\bw_k$ and $\bc_k$ are eigenvectors of the matrices $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ and $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, corresponded to the maximum eigenvalues.
+	The vector $\bw_k$ and $\bc_k$ are eigenvectors of the matrices $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ and $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, corresponding to the maximum eigenvalues.
 	
 	\begin{equation*}
 	\bw_k \varpropto \bX_k^{\T} \bu_{k-1} \varpropto \bX_k^{\T} \bY_k \bc_{k-1} \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bt_{k-1} \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_{k-1},
@@ -260,27 +261,27 @@ where $ \lambda_{\max} (\mathbf{A})$~is the maximum eigenvalue of the matrix $\m
 Using the statement~\ref{st::eig}, we obtain the required result.
 $\blacksquare$
 
-After the inner loop, the step (11) is to compute vectors $\bp_k$, $\bq_k$ by projection of the columns of the matrices $\bX_k$ и $\bY_k$ to the vector $\bt_k$. 
-To go to the next step one has to deflate the matrices $\bX_k$ и $\bY_k$ by the one-rank approximations $\bt_k \bp_k^{\T}$ и $\bt_k \bq_k^{\T}$
+After the inner loop, the step (11) is to compute vectors $\bp_k$, $\bq_k$ by projection of the columns of the matrices $\bX_k$ and $\bY_k$ to the vector $\bt_k$. 
+To go to the next step one has to deflate the matrices $\bX_k$ and $\bY_k$ by the one-rank approximations $\bt_k \bp_k^{\T}$ and $\bt_k \bq_k^{\T}$
 \begin{align*}
     \bX_{k + 1} &= \bX_{k} - \bt_k \bp_k^{\T} = \bX - \sum_k \bt_k \bp_k^{\T}, \\
     \bY_{k + 1} &= \bY_{k} - \bt_k \bq_k^{\T} = \bY - \sum_k \bt_k \bq_k^{\T}.
 \end{align*}
 Each next vector $\bt_{k+1}$ turns out to be orthogonal to all vectors $\bt_i$, $i=1, \dots, k$.
 
-Let assume that the dimension of objects, responses and latent variables spaces are equal to 2 ($n = r = l = 2$).
+Let assume that the dimension of object, response and latent variable spaces are equal to~2 ($n = r = l = 2$).
 Fig.~\ref{fig::PLSFigure} shows the result of the PLS algorithm in this case.
 Blue and green dots represent the rows of the matrices $\bX$ and $\bY$, respectively. 
 The dots were generated from a normal distribution with zero expectation. 
-The covariance matrices contours of the distributions are shown in red.
-The black contour is a unit circle. 
+\textcolor{red}{Contours of the distribution covariance matrices} are shown in red.
+Black contours are unit circles. 
 Red arrows correspond to principal components for the set of points. 
 Black arrows correspond to the vectors of the matrices $\bW$ and $\bC$ from the PLS algorithm. 
-The vectors $\bt_k$ and $\bu_k$ are equal to the projected matrices $\bX_k$ and $\bY_k$ on the vectors $\bw_k$ and $\bc_k$, respectively, and are denoted by black pluses. 
-Taking into account the interaction between the matrices $\bX$ and $\bY$ deviates the vectors $\bw_k$ and $\bc_k$ from the principal components directions. 
+The vectors $\bt_k$ and $\bu_k$ are equal to the projected matrices $\bX_k$ and $\bY_k$ to the vectors $\bw_k$ and $\bc_k$, respectively, and are denoted by black pluses. 
+Taking into account the interaction between the matrices $\bX$ and $\bY$ deviates the vectors $\bw_k$ and $\bc_k$ from the principal \textcolor{red}{components - не знаю можно ли писать просто во множественном числе} directions. 
 The deviation of the vectors $\bw_k$ is insignificant. 
 In the first iteration, $\bc_1$ is close to the principal component $\textit{pc}_1$, but the vectors $\bc_k$ in the next iterations could strongly correlate. 
-The difference in the behaviour of the vectors $\bw_k$ and $\bc_k$ is associated with the deflation process. In particular we subtract from $\bY$ one-rank approximation found in the space of the matrix $\bX$.
+The difference in the behaviour of the vectors $\bw_k$ and $\bc_k$ is associated with the deflation process. In particular, we subtract from $\bY$ the one-rank approximation found in the space of the matrix $\bX$.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{figs/PLSFigure.eps}
@@ -288,7 +289,7 @@ The difference in the behaviour of the vectors $\bw_k$ and $\bc_k$ is associated
 	\label{fig::PLSFigure}
 \end{figure}
 
-To obtain the model predictions and find the model parameters, let multiply the both sides of the equation~\eqref{eq::PLS_X} by the matrix $\bW$. Since the rows of the residual matrix  $\bE$ are orthogonal to the columns of the matrix $\bW$, we have
+To obtain the model predictions and find the model parameters, let multiply the both \textcolor{red}{hand-}sides of the equation~\eqref{eq::PLS_X} by the matrix $\bW$. Since the rows of the residual matrix  $\bE$ are orthogonal to the columns of the matrix $\bW$, we have
 \[
 	\bX \bW = \bT \bP^{\T} \bW.
 \]
@@ -309,7 +310,7 @@ Thus, the model parameters~\eqref{eq::model} are equal to
     \label{eq::model_parameters}
 \end{equation}
 
-To find the model predictions during the testing we have to
+To find the model predictions during the testing, we have to
 \begin{itemize}
 	\item normalize the test data;
 	\item compute the prediction of the model using the linear transformation with the matrix $\bTheta$ from~\eqref{eq::model_parameters};
@@ -328,7 +329,7 @@ In this case, the matrices $\bX$ and $\bY$ are autoregressive matrices.
 
 In the case of the ECoG data, the matrix $\bX$ consists of the spatial-temporal representation of voltage time series, and the matrix $\bY$ contains information about the position of the hand.
 The generation process of the matrix $\bX$ from the voltage values described in~\cite{gasanov2017pls}. 
-Feature description in each time moment has dimension equal to $864$, the hand position is described by the coordinates along three axes. 
+Feature description in each time moment has dimension equal to $864$. The hand position is described by the coordinates along three axes. 
 An example of voltage data samples with the different channels and corresponding spatial coordinates of the hand are shown in Fig.~\ref{fig::ecog_data}.
 To predict the position of the hand in the next moments we used an autoregressive approach.
 One object consists of a feature description in a few moments. 
@@ -337,7 +338,7 @@ The task is to predict the hand position in the next few moments of time.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{figs/ecog_data.eps}
-	\caption{The ECoG data example. On the left voltage data taken from multiple channels is shown, on the right there are coordinates of the hand along three axes.}
+	\caption{The ECoG data example. On the left the voltage data taken from multiple channels is shown, on the right there are coordinates of the hand along three axes.}
 	\label{fig::ecog_data}
 \end{figure}
 
@@ -380,7 +381,7 @@ The PLS algorithm restored the autoregressive dependence and found the daily sea
 \subsection{ECoG dataset}
 Fig.~\ref{fig::ecog_n_comp} illustrates the dependence of the normalized mean-squared error~\eqref{eq::nmse} on the latent space dimensionality $l$ for ECoG dataset. 
 The approximation error changes slightly for $l > 5$.
-The joint spatial-temporal representation of objects and the position of the hand can be represented as a vector of dimensionality $l \ll n$.
+The joint spatial-temporal representation of objects and the position of the hand can be represented as a vector of dimensionality equal to $l \ll n$.
 Let us fix $l = 5$. 
 An example of the approximation of the hand position is shown in Fig.~\ref{fig::ecog_prediction}. 
 Solid lines represent the true coordinates of the hand along all axes, the dotted lines show the approximation by the PLS algorithm.
@@ -402,8 +403,8 @@ Solid lines represent the true coordinates of the hand along all axes, the dotte
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 In the paper we proposed the approach for solving the problem of time series decoding and forecasting. 
-The algorithm of partial least squares allows to build a vector target variable prediction. 
-The latent space contains information about the objects and the answers and dramatically reduces the dimensions of the input matrices. 
+The algorithm of partial least squares allows to build a \textcolor{red}{vector target variable prediction -> target vector prediction}. 
+The latent space contains information about the objects and the responses and dramatically reduces the dimensionsionalies of the input matrices. 
 The computational experiment demonstrated the applicability of the proposed method to the tasks of electricity consumption forecasting and brain-computer interface designing.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
