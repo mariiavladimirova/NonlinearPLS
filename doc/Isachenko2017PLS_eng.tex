@@ -127,34 +127,36 @@ The proposed method significantly reduces the dimensionality of the feature spac
 
 \section{Problem statement}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Задана выборка $\mathfrak{D}= \left( \bX, \bY \right)$, где $\mathbf{X} \in \mathbb{R}^{m \times n}$~--- матрица объектов, $\mathbf{Y} \in \mathbb{R}^{m \times r}$~--- матрица ответов. 
-Способ построения выборки под определенную прикладную задачу описан в разделе \textit{Вычислительный эксперимент}.
 
-Предполагается, что между объектами $\bx \in \mathbb{R}^n$ и ответами $\by \in \mathbb{R}^r$ существует линейная зависимость 
+Given the dataset $\mathfrak{D}= \left( \bX, \bY \right)$, where $\mathbf{X} \in \mathbb{R}^{m \times n}$ is a design matrix, $\mathbf{Y} \in \mathbb{R}^{m \times r}$is the target matrix. 
+The examples of how to construct the dataset for a particular application task described in the \hyperref[sec:exper]{Computational experiment}.
+
+We assume that there is a linear dependence between the objects $\bx \in \mathbb{R}^n$ and the responses $\by \in \mathbb{R}^r$
 \begin{equation}
  \underset{1 \times r}{\by} = \underset{1 \times n}{\vphantom{\by}\bx} \cdot \underset{n \times r}{\vphantom{\by}\bTheta} + \underset{1 \times r}{\vphantom{\by}\boldsymbol{\varepsilon}}, 
 \label{eq::model}
 \end{equation}
-где $\bTheta$~---~матрица параметров модели, а~$\boldsymbol{\varepsilon}$~---~вектор регрессионных остатков.
+where $\bTheta$ is the matrix of the model parameters, $\boldsymbol{\varepsilon}$ is the vector of residuals.
 
-Необходимо по известной выборке $\mathfrak{D}$ восстановить матрицу параметров модели~\eqref{eq::model}.
-Оптимальные параметры находятся минимизацией функции ошибки.
-Введем квадратичную функцию ошибки $S$ на выборке $\mathfrak{D}$:
+The task is to find the matrix of the model parameters $\bTheta$ given the dataset $\mathfrak{D}$.
+The optimal parameters are determined by error function minimization. 
+Define the quadratic error function $S$ for the dataset $\mathfrak{D}$:
 \begin{equation}
 	S(\bTheta | \mathfrak{D}) = {\left\| \underset{m \times n}{\vphantom{\by}\mathbf{X}} \cdot \underset{n \times r}{\vphantom{\by}\bTheta} - \underset{m \times r}{\vphantom{\by}\mathbf{Y}} \right\| }_2^2 = \sum_{i=1}^m \left\| \underset{1 \times n}{\vphantom{\by}\bx_i} \cdot \underset{n \times r}{\vphantom{\by}\bTheta} - \underset{1 \times r}{\vphantom{\by}\by_i} \right\|_2^2 \rightarrow\min_{\bTheta}.
 \label{eq::error_function}
 \end{equation}
  
-Линейная зависимость столбцов матрицы $\bX$ приводит к неустойчивому решению задачи оптимизации~\eqref{eq::error_function}. Для устранения линейной зависимости применяются методы отбора признаков.
+ The linear dependence of the columns of the matrix $X$ leads to instable solution for the optimization problem~\eqref{eq::error_function}. 
+ To avoid the strong linear dependence one could use feature selection techniques.
 
 \section{Partial Least Squares method}
 
-Для устранения линейной зависимости и снижения размерности пространства применяется метод главных компонент PCA. 
-Основным недостатком данного метода является то, что он не учитывает взаимосвязь между объектами и ответами.
-Метод частных наименьших квадратов PLS проецирует матрицу объектов $\bX$ и матрицу ответов $\bY$ в латентное пространство $\mathbb{R}^l$ меньшей размерности ($l < r < n$).
-Алгоритм PLS находит в латентном пространстве матрицу $\bT \in \mathbb{R}^{m \times l}$, наилучшим образом описывающую исходные матрицы $\bX$ и $\bY$.
+To eliminate the linear dependence and reduce the dimension of the input space the principal components analysis (PCA) is widely used. 
+The main disadvantage of the PCA method is its insensitivity to the interrelation between the objects and the responses.
+Partial least squares (PLS) algorithm projects the design matrix $\bX$ and the target matrix in latent space $\mathbb{R}^l$ with low dimension ($l < r < n$).
+The PLS algorithm finds the latent space matrix $\bT \in \mathbb{R}^{m \times l}$ that best describes the original matrices $\bX$ and $\bY$.
 
-Матрица объектов $\bX$ и матрица ответов $\bY$ проецируются в латентное пространство следующим образом: 
+The disign matrix $\bX$ and the target matrix $\bY$ is projected into the latent space in the following way:
 \begin{align}
 \label{eq::PLS_X}
  \underset{m \times n}{\vphantom{\bQ}\bX} 
@@ -165,18 +167,13 @@ The proposed method significantly reduces the dimensionality of the feature spac
  &= \underset{m \times l}{\vphantom{\bQ}\bT} \cdot \underset{l \times r}{\bQ^{\T}} + \underset{m \times r}{\vphantom{\bQ}\bE}
  =  \sum_{k=1}^l  \underset{m \times 1}{\vphantom{\bq_k^{\T}}\bt_k} \cdot \underset{1 \times r}{\bq_k^{\T}} +  \underset{m \times r}{\vphantom{\bq_k^{\T}}\bE},
 \end{align}
-где $\bT$~--- матрица совместного описания объектов и ответов в латентном пространстве, причём столбцы матрицы $\bT$ ортогональны; $\bP,\ \bQ$~--- матрицы перехода из латентного пространства в  исходные пространства; $\bE,\ \bF$~--- матрицы невязок. 
+is a matrix of joint description of the objects and the outcomes in the latent space, and the columns of the matrix $\bT$ are orthogonal; $\bP,\ \bQ$ are transition matrices from the latent space to the original space; $\bE\ \bF$ are residual matrices.
 
-Псевдокод метода регрессии PLS приведен в алгоритме~\ref{PLSR_code}.
-Алгоритм итеративно на каждом из $l$ шагов вычисляет по одному столбцу $\bt_k$, $\bp_k$, $\bq_k$ матриц $\bT$, $\bP$, $\bQ$ соответственно. После вычисления следующего набора векторов из матриц $\bX$, $\bY$ вычитаются очередные одноранговые аппроксимации. 
-Первым шагом необходимо произвести нормировку столбцов исходных матриц (вычесть среднее и разделить на стандартное отклонение).
-На этапе тестирования необходимо провести нормировку тестовых данных, вычислить предсказание модели~\ref{eq::model}, а затем провести обратную нормировку.
-
-\textcolor{blue}{
-The pseudo-code of the PLS regression method is given in the algorithm~\ref{PLSR_code}.
-The algorithm iteratively on each of the $l$ steps calculates columns $\bt_k$, $\bp_k$, $\bq_k$ of the matrices $\bT$, $\bP$, $\bQ$, respectively. After the computation of the next set of vectors, we have the next one-rank approximations which are subtracted from the matrices $\bX$, $\bY$.
-For the first step it is necessary to make the normalization of the columns of the original matrices (subtract the mean and divide by the standard deviation).
-During the testing phase we need to normalize of the test data, compute the prediction of the model~\ref{eq::model}, and then perform the reverse normalization.}
+The pseudocode of the PLS regression algorithm is given in the algorithm~\ref{PLSR_code}.
+In each of the $l$ steps the algorithm iteratively calculates columns $\bt_k$, $\bp_k$, $\bq_k$ of the matrices $\bT$, $\bP$, $\bQ$, respectively. 
+After the computation of the next set of vectors, the one-rank approximations are subtracted from the matrices $\bX$, $\bY$. This step is called matrix deflation.
+The first step one has to normalize the columns of the original matrices (subtract the mean and divide by the standard deviation).
+During the test mode we need to normalize the test data, compute the model prediction~\eqref{eq::model}, and then perform the reverse normalization.
 
 \begin{algorithm}[h]
 \caption{PLSR algorithm}
@@ -208,38 +205,26 @@ During the testing phase we need to normalize of the test data, compute the pred
 	\ENDFOR
 \end{algorithmic}
 \end{algorithm}
-Вектора $\bt_k$ и $\bu_k$ из внутреннего цикла алгоритма~\ref{PLSR_code}
-содержат информацию о матрице объектов $\bX$ и матрице ответов $\bY$ соответственно. 
-Блоки из шагов (6)-(7) и шагов (8)-(9)~--- аналоги алгоритма PCA для матриц $\bX$ и $\bY$~\cite{geladi1986partial}. 
-Последовательное выполнение блоков позволяет учесть взаимную связь между матрицами $\bX$ и $\bY$.
 
-\textcolor{blue}{
-Vectors $\bt_k$ and $\bu_k$ of the inner loop of the algorithm~\ref{PLSR_code} contain information about the object matrix $\bX$ and the matrix with answers $\bY$, respectively. 
-The blocks from steps (6)--(7) and steps (8)-(9)~are analogues of the PCA algorithm for the matrices $\bX$ and $\bY$~\cite{geladi1986partial}. 
-Consistent implementation of the blocks allows to take into account the mutual coupling between the matrices $\bX$ and $\bY$.}
+The vectors $\bt_k$ and $\bu_k$ from the inner loop of the algorithm~\ref{PLSR_code} contain information about the object matrix $\bX$ and the outcome matrix $\bY$, respectively. 
+The blocks of steps (6)--(7) and (8)-(9)~are analogues of the PCA algorithm for the matrices $\bX$ and $\bY$~\cite{geladi1986partial}. 
+Sequential repetition of the blocks takes into account the interaction between the matrices $\bX$ and $\bY$.
 
-Теоретическое обоснование алгоритма PLS следует из следующих утверждений.
-\textcolor{blue}{The theoretical explanation of the PLS algorithm follows from the following statements.}
+The theoretical explanation of the PLS algorithm follows from the statements.
 \begin{statement}
-Наилучшее описание матриц $\bX$ и $\bY$ с учётом их взаимосвязи достигается при максимизации ковариации между векторами $\bt_k$ и $\bu_k$. 
+The best description of the matrices $\bX$ и $\bY$ taking into account their interrelation is achieved by maximizion the covariance between the vectors $\bt_k$ и $\bu_k$.
 \end{statement}
-Утверждение следует из равенства
-\textcolor{blue}{It follows from the equation}
+The statement follows from the equation
 \[
 \text{cov} (\bt_k, \bu_k) = \text{corr} (\bt_k, \bu_k) \cdot \sqrt{\text{var}(\bt_k)} \cdot \sqrt{\text{var}(\bu_k)}.
 \]
-Максимизация дисперсий векторов $\bt_k$ и $\bu_k$ отвечает за сохранение информации об исходных матрицах, 
-корреляция между векторами отвечает взаимосвязи между $\bX$ и~$\bY$. $\blacksquare$
+Maximization of variances of the vectors $\bt_k$ и $\bu_k$ correspond to keeping information about original matrices, the correlation of these vectors corresponds to interrelation between $\bX$ и~$\bY$. $\blacksquare$
 
-Во внутреннем цикле алгоритма вычисляются нормированные вектора весов $\bw_k$ и $\bc_k$. Из данных векторов строятся матрицы весов $\bW$ и $\bC$ соответственно.
-
-\textcolor{blue}{
-In the inner loop of the algorithm the normalized weight vectors $\bw_k$ and $\bc_k$ are calculated. From these vectors we construst the matrices $\bW$ and $\bC$, respectively.}
+In the inner loop of the algorithm~\ref{PLSR_code} the normalized weight vectors $\bw_k$ and $\bc_k$ are calculated. 
+These vectors construct the matrices $\bW$ and $\bC$, respectively.
 
 \begin{statement}
-	В результате выполнения внутреннего цикла вектора $\bw_k$ и $\bc_k$ будут собственными векторами матриц $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ и $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, соответствующими максимальным собственным значениям.
-	\textcolor{blue}{
-	As a result of performing the inner loop, the vector $\bw_k$ and $\bc_k$ are eigenvectors of the matrices $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ and $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, corresponding to the maximum eigenvalues.}
+	The vector $\bw_k$ and $\bc_k$ are eigenvectors of the matrices $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$ and $\bY_k^{\T} \bX_k \bX_k^{\T} \bY_k$, corresponded to the maximum eigenvalues.
 	
 	\begin{equation*}
 	\bw_k \varpropto \bX_k^{\T} \bu_{k-1} \varpropto \bX_k^{\T} \bY_k \bc_{k-1} \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bt_{k-1} \varpropto \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_{k-1},
@@ -247,34 +232,23 @@ In the inner loop of the algorithm the normalized weight vectors $\bw_k$ and $\b
 	\begin{equation*}
 	\bc_k \varpropto \bY_k^{\T} \bt_k \varpropto \bY_k^{\T} \bX_k \bw_k \varpropto \bY_k^{\T} \bX_k \bX_k^{\T} \bu_{k-1} \varpropto \bY_k^{\T} \bX_k \bX_k^{\T} \bY_k \bc_{k-1},
 	\end{equation*}
-	где символ $\varpropto$ означает равенство с точностью до мультипликативной константы. 
-	\textcolor{blue}{
-	where the symbol $\varpropto$ means equality up to a multiplicative constant.}
+	where the $\varpropto$ symbol means equality up to a multiplicative constant.
 	\label{st::eig}
 \end{statement}
 
-Утверждение следует из того факта, что правила обновления векторов $\bw_k$, $\bc_k$ совпадают с итерацией алгоритма поиска максимального собственного значения. Данный алгоритм основан на следующем факте.
+The statement follows from the fact that the update rule for vectors $\bw_k$, $\bc_k$ coincides with the iteration of the power method for the maximum eigenvalue.
 
-\textcolor{blue}{
-The statement follows from the fact that the update rule for vectors $\bw_k$, $\bc_k$ coincides with the iteration of the search algorithm for the maximum eigenvalue. This algorithm is based on the following fact.}
-
-Если матрица $\mathbf{A}$ диагонализуема, $\bx$~--- некоторый вектор, то
-\textcolor{blue}{
-Let a matrix $\mathbf{A}$ be diagonilized, $\bx$ be some vector, then}
+Let a matrix $\mathbf{A}$ be diagonilized, $\bx$ be some vector, then
 \[
 	\lim_{k \rightarrow \infty} \mathbf{A}^k \bx = \lambda_{\max}(\mathbf{A}) \cdot \mathbf{v}_{\max},
 \]
-где $\lambda_{\max} (\mathbf{A})$~--- максимальное собственное значение матрицы $\mathbf{A}$, $\mathbf{v}_{\max}$~---собственный вектор матрицы $\mathbf{A}$, соответствующий $ \lambda_{\max} (\mathbf{A})$.
-\textcolor{blue}{
-where $ \lambda_{\max} (\mathbf{A})$~is the maximum eigenvalue of the matrix $\mathbf{A}$, $\mathbf{v}_{\max}$~is the eigenvector of the matrix $\mathbf{A}$, corresponding to $ \lambda_{\max} (\mathbf{A})$.}
+where $ \lambda_{\max} (\mathbf{A})$~is the maximum eigenvalue of the matrix $\mathbf{A}$, $\mathbf{v}_{\max}$~is the eigenvector of the matrix $\mathbf{A}$, corresponding to $ \lambda_{\max} (\mathbf{A})$.
 $\blacksquare$
 
 \begin{statement}
-Обновление векторов по шагам (6)--(9) алгоритма~\ref{PLSR_code} соответствует максимизации ковариации между векторами $\bt_k$ и $\bu_k$.
-\textcolor{blue}{
-The update rule for the vectors in steps (6)--(9) of the algorithm~\ref{PLSR_code} corresponds to the maximization of the covariance between the vectors $\bt_k$ and $\bu_k$.}
+
+The update rule for the vectors in steps (6)--(9) of the algorithm~\ref{PLSR_code} corresponds to the maximization of the covariance between the vectors $\bt_k$ and $\bu_k$.
 \end{statement}
-\hrulefill
 
 The maximum covariance between the vectors $\bt_k$ and $\bu_k$ is equal to the maximum eigenvalue of the matrix $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$:
 \begin{align*}
@@ -286,20 +260,13 @@ where $ \lambda_{\max} (\mathbf{A})$~is the maximum eigenvalue of the matrix $\m
 Using the statement~\ref{st::eig}, we obtain the required result.
 $\blacksquare$
 
-\hrulefill
-
-После завершения внутреннего цикла на шаге (11) вычисляются вектора $\bp_k$, $\bq_k$ проецированием столбцов матриц $\bX_k$ и $\bY_k$ на вектор $\bt_k$. Для перехода на следующий шаг необходимо вычесть из матриц $\bX_k$ и $\bY_k$ одноранговые аппроксимации $\bt_k \bp_k^{\T}$ и $\bt_k \bq_k^{\T}$
-\begin{equation*}
-    \bX_{k + 1} = \bX_{k} - \bt_k \bp_k^{\T} = \bX - \sum_k \bt_k \bp_k^{\T},
-\end{equation*}
-\begin{equation*}
-    \bY_{k + 1} = \bY_{k} - \bt_k \bq_k^{\T} = \bY - \sum_k \bt_k \bq_k^{\T}.
-\end{equation*}
-Тогда каждый следующий вектор $\bt_k$ \textcolor{red}{$\bt_{k+1}$ ?}оказывается ортогонален всем векторам $\bt_i$, $i=1, \dots, k$.
-\textcolor{blue}{
-Then, each next vector $\bt_{k+1}$ turns out to be orthogonal to all vectors $\bt_i$, $i=1, \dots, k$.}
-
-\hrulefill
+After the inner loop, the step (11) is to compute vectors $\bp_k$, $\bq_k$ by projection of the columns of the matrices $\bX_k$ и $\bY_k$ to the vector $\bt_k$. 
+To go to the next step one has to deflate the matrices $\bX_k$ и $\bY_k$ by the one-rank approximations $\bt_k \bp_k^{\T}$ и $\bt_k \bq_k^{\T}$
+\begin{align*}
+    \bX_{k + 1} &= \bX_{k} - \bt_k \bp_k^{\T} = \bX - \sum_k \bt_k \bp_k^{\T}, \\
+    \bY_{k + 1} &= \bY_{k} - \bt_k \bq_k^{\T} = \bY - \sum_k \bt_k \bq_k^{\T}.
+\end{align*}
+Each next vector $\bt_{k+1}$ turns out to be orthogonal to all vectors $\bt_i$, $i=1, \dots, k$.
 
 Let assume that the dimension of objects, responses and latent variables spaces are equal to 2 ($n = r = l = 2$).
 Fig.~\ref{fig::PLSFigure} shows the result of the PLS algorithm in this case.
@@ -317,7 +284,7 @@ The difference in the behaviour of the vectors $\bw_k$ and $\bc_k$ is associated
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{figs/PLSFigure.eps}
-	\caption{Иллюстрация алгоритма PLS}
+	\caption{The result of the PLS algorithm for the case $n = r = l = 2$}.
 	\label{fig::PLSFigure}
 \end{figure}
 
@@ -351,10 +318,13 @@ To find the model predictions during the testing we have to
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Computational experiment}
+\label{sec:exper}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Time series of energy consumption contain hourly records (total of 52512 observations). 
-A row of the matrix $\bX$ is the local history of the signal for one week $n = 24 \times 7$. A row of the matrix $\bY$ is the local forecast of energy consumption for the next 24 hours $r = 24$. In this case, the matrices $\bX$ and $\bY$ are autoregressive matrices.
+A row of the matrix $\bX$ is the local history of the signal for one week $n = 24 \times 7$. 
+A row of the matrix $\bY$ is the local forecast of energy consumption for the next 24 hours $r = 24$. 
+In this case, the matrices $\bX$ and $\bY$ are autoregressive matrices.
 
 In the case of the ECoG data, the matrix $\bX$ consists of the spatial-temporal representation of voltage time series, and the matrix $\bY$ contains information about the position of the hand.
 The generation process of the matrix $\bX$ from the voltage values described in~\cite{gasanov2017pls}. 
@@ -367,22 +337,10 @@ The task is to predict the hand position in the next few moments of time.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{figs/ecog_data.eps}
-	\caption{Пример данных ECoG. Слева изображены данные напряжения, снятые с нескольких каналов, справа~--- координаты руки по трём осям. The ECoG data example. On the left voltage data taken from multiple channels is shown, on the right there are coordinates of the hand along three axes. \textcolor{blue}{как-то неочень}}
+	\caption{The ECoG data example. On the left voltage data taken from multiple channels is shown, on the right there are coordinates of the hand along three axes.}
 	\label{fig::ecog_data}
 \end{figure}
 
-Введём среднеквадратичную ошибку для некоторых матриц $\mathbf{A} = [a_{ij}]$ и $\mathbf{B} = [b_{ij}]$
-\[
-\text{MSE} (\mathbf{A}, \mathbf{B}) = \sum_{i,j} (a_{ij} - b_{ij})^2.
-\]
-Для оценивания качества аппроксимации вычисляется значение нормированной среднеквадратичной ошибки
-\begin{equation}
-\text{NMSE}(\bY,  \mathbf{\hat{Y}}) = \frac{\text{MSE} (\bY, \mathbf{\hat{Y}})}{\text{MSE} (\bY, \mathbf{\bar{Y}})},
-\label{eq::nmse}
-\end{equation}
-где $\mathbf{\hat{Y}}$~--- прогноз модели, $\mathbf{\bar{Y}}$~--- константный прогноз средним значением по столбцам матрицы.
-
-\textcolor{blue}{
 We introduce the mean-squared error for matrices $\mathbf{A} = [a_{ij}]$ and $\mathbf{B} = [b_{ij}]$ 
 \[
 \text{MSE} (\mathbf{A}, \mathbf{B}) = \sum_{i,j} (a_{ij} - b_{ij})^2.
@@ -392,7 +350,7 @@ To estimate the prediction quality, we compute the normalized MSE
 \text{NMSE}(\bY,  \mathbf{\hat{Y}}) = \frac{\text{MSE} (\bY, \mathbf{\hat{Y}})}{\text{MSE} (\bY, \mathbf{\bar{Y}})},
 \label{eq::nmse}
 \end{equation}
-where $\mathbf{\hat{Y}}$ is the model outcome, $\mathbf{\bar{Y}}$ is the constant forecast by the average value over the columns of the matrix.}
+where $\mathbf{\hat{Y}}$ is the model outcome, $\mathbf{\bar{Y}}$ is the фмукфпу constant forecast over the columns of the matrix.
 
 \subsection{Energy consumption dataset}
 
@@ -403,11 +361,9 @@ First, the error drops sharply with increasing the latent space dimensionality a
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.75\linewidth]{figs/energy_n_comp}
-	\caption{The energy consumption forecast by the PLS algorithm (the latent space dimensionality is equal to $l$=14).}
+	\caption{NMSE as a function of dimension $l$ of latent space for energy consumption data.}
 	\label{fig::energy_n_comp}
 \end{figure}
-
-\hrulefill
 
 The error achieves the minimum value for $l=14$. 
 Let build a forecast of energy consumption for a given $l$. 
@@ -417,56 +373,39 @@ The PLS algorithm restored the autoregressive dependence and found the daily sea
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.95\textwidth]{figs/energy_prediction}
-	\caption{Зависимость ошибки от размерности латентного пространства для данных потребления электроэнергии. The dependence of the error on the latent space dimensionality for the energy consumption dataset.}
+	\caption{The energy consumption forecast by the PLS algorithm (the latent space dimensionality is equal to $l=14$).}
 	\label{fig::energy_prediction}
 \end{figure}
 
 \subsection{ECoG dataset}
-
-На Рис.~\ref{fig::ecog_n_comp} представлена зависимость нормированной квадратичной ошибки~\eqref{eq::nmse} от размерности латентного пространства. Ошибка аппроксимации меняется незначительно при $l > 5$.
-Таким образом совместное описание пространственно-временного спектрального представления объектов и пространственного положения руки может быть представлено вектором размерности $l \ll n$.
-Зафиксируем $l = 5$. 
-Пример аппроксимации положения руки изображен на Рис.~\ref{fig::ecog_prediction}. 
-Сплошными линиями изображены истинные координаты руки по всем осям, пунктирными линиями показана аппроксимация методом PLS.
-
-\textcolor{blue}{
-Fig.~\ref{fig::ecog_n_comp} shows the dependence of the normalized quadratic error~\eqref{eq::nmse} on the latent space dimensionality. The approximation error changes slightly when $l > 5$.
-Thus, the joint spatial-temporal spectrum representation of objects and the spatial position of the hand can be represented by a vector of dimensionality $l \ll n$.
+Fig.~\ref{fig::ecog_n_comp} illustrates the dependence of the normalized mean-squared error~\eqref{eq::nmse} on the latent space dimensionality $l$ for ECoG dataset. 
+The approximation error changes slightly for $l > 5$.
+The joint spatial-temporal representation of objects and the position of the hand can be represented as a vector of dimensionality $l \ll n$.
 Let us fix $l = 5$. 
 An example of the approximation of the hand position is shown in Fig.~\ref{fig::ecog_prediction}. 
-Solid lines represent the true coordinates of the hand on all axes, the dotted lines show the approximation by the PLS method.}
+Solid lines represent the true coordinates of the hand along all axes, the dotted lines show the approximation by the PLS algorithm.
  
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.75\linewidth]{figs/ecog_n_comp}	
-	\caption{Зависимость ошибки от размерности латентного пространства для данных ECoG. The dependence of the error on the latent space dimensionality for the ECoG dataset.}
+	\caption{NMSE as a function of dimension $l$ of latent space for the ECoG data.}
 	\label{fig::ecog_n_comp}
 \end{figure}
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{figs/ecog_prediction}
-	\caption{Прогноз движения руки данных ECoG алгоритмом PLS при размерности латентного пространства $l=5$. The forecast of 
-	the hand movement by the PLS algorithm when the latent space dimensionality is equal to $l$=5.}
+	\caption{The hand motions predicted by the PLS algorithm (the latent space dimensionality is equal to $l=5$).}
 	\label{fig::ecog_prediction}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
-В данной работе предложен подход к решению задачи декодирования временных рядов и прогнозирования. 
-Алгоритм частичных наименьших квадратов позволяет построить векторный прогноз целевой переменной. 
-Латентное пространство содержит информацию об объектах и ответах и снижает размерности исходных матриц на порядки. 
-Вычислительный эксперимент продемонстрировал применимость предложенного метода к задачам прогнозирования временных рядов объёмов потребления электроэнергии и проектирования нейрокомпьютерного интерфейса.
-
-\textcolor{blue}{
-In the paper we proposed the approach for solving the problem of decoding and forecasting time-series. 
-The algorithm of partial least squares allows to build a target variable vector prediction. 
-The latent space contains information about the objects and the answers and reduces the dimensions of the source (? initial) matrices by orders of magnitude. 
-The computational experiment demonstrated the applicability of the proposed method to the tasks of electricity consumption forecasting and brain-computer interface designing.}
+In the paper we proposed the approach for solving the problem of time series decoding and forecasting. 
+The algorithm of partial least squares allows to build a vector target variable prediction. 
+The latent space contains information about the objects and the answers and dramatically reduces the dimensions of the input matrices. 
+The computational experiment demonstrated the applicability of the proposed method to the tasks of electricity consumption forecasting and brain-computer interface designing.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\section*{СПИСОК ЛИТЕРАТУРЫ}
-
-%\nocite{*}
 
 \bibliographystyle{unsrt}
 \bibliography{papers_pls}
