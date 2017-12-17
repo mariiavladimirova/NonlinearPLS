@@ -61,20 +61,21 @@
 	\end{center}
 	\textbf{Abstract:} 
 	(Решается задача обнаружения зависимостей в прогнозируемой переменной.) 
+	\textcolor{red}{The paper is devoted to the problem of detecting the relation between independent and target variables. }
 	The problem is to detect the relation between independent and target variables.
 	(Вместо построения прогноза одного момента времени предлагается прогнозировать многомерный вектор прогноза.)
-	We propose to predict multidimensional target vector instead of predicting one timestamp point.
+	We propose to predict \textcolor{red}{a} multidimensional target vector instead of predicting one timestamp point.
 	(Рассматривается линейная модель метода частных наименьших квадратов.)
 	We consider the linear model of partial least squares (PLS).
-	(Описан метод нахождения матрицы совместного описания для исходных матриц объектов и ответов.)
-	The described method finds a matrix of joint description for the design matrix and the outcome matrix.
+	(Описан метод нахождения матрицы совместного описания для исходных матриц объектов и ответов.  \textcolor{red}{Strange sentence:})
+	The method finds \textcolor{red}{the} matrix of \textcolor{red}{a} joint description for the design matrix and the outcome matrix.
 	(Найденное описание является низкоразмерным, что позволяет построить устойчивую, простую модель.)
-	New description is low-dimensional and allows to build simple, stable model.
+	\textcolor{red}{The} description is low-dimensional and allows to build \textcolor{red}{a} simple, stable model.
 	(Проводится вычислительный эксперимент на реальных данных объемов потребления электроэнергии и данных сигналов кортикограмм.)
-	We conducted computational experiment on real data of energy consumption and electrocorticograms signals (ECoG).
+	We conducted computational experiments on \textcolor{red}{the} real data of energy consumption and electrocorticograms signals (ECoG).
 	
 	\bigskip
-	\textbf{Keywords}: time series decoding, forecasting, partial least squares, dimensionality reduction
+	\textbf{Keywords}: time series decoding, forecast, partial least squares, dimensionality reduction
 
 \linenumbers
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,65 +83,65 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 (В работе рассматривается задача восстановления зависимости между независимой и прогнозируемой переменными.)
-Paper investigate the problem of dependency recovering between input data and model outcome.
-(Предлагаемая модель позволяет восстанавливать зависимость в случае многомерной прогнозируемой переменной. )
-Suggested model is suitable for predicting multidimensional target variable.
+Paper investigate\textcolor{red}{s} the problem of dependence recovering between \textcolor{red}{an} input data and \textcolor{red}{a} model outcome.
+(Предлагаемая модель позволяет восстанавливать зависимость в случае многомерной прогнозируемой переменной.)
+\textcolor{red}{The proposed} model is suitable for predicting \textcolor{red}{a} multidimensional target variable.
 (В случае задачи прогнозирования пространства объектов и ответов имеют одну и ту же природу.)
-In the case of forecasting problem the object and target spaces have the same nature.
-(Для построения модели по исходному временному ряду строятся авторегрессионные матрицы объектов и ответов. )
-To build the model we need to construct autoregressive matrices for input objects and target variable.
+In the case of \textcolor{red}{the} forecasting problem the object and target spaces have the same nature.
+(Для построения модели по исходному временному ряду строятся авторегрессионные матрицы объектов и ответов.)
+To build the model we need to construct autoregressive matrices for input objects and target variables.
 (Объектом является локальная история сигнала, ответом~--- значение сигнала в следующие моменты времени.)
-The object is the local signal history, the outcome is signal values in the next timestamps.
+The object is \textcolor{red}{a} local signal history, the outcome is signal values in the next timestamps.
 (Авторегрессионная модель предполагает, что значение сигнала в данный момент времени линейно зависит от предыдущих значений этого же сигнала. )
-Autoregressive model makes a consumption that current signal values depends linearly on the previous signal values.
+\textcolor{red}{An} autoregressive model makes a consumption that \textcolor{red}{the} current signal values depend linearly on the previous signal values.
 
 (В задаче декодирования временных рядов пространство объектов имеет значимо большую размерность.)
 ( В этом случае пространства объектов и ответом имеют разную природу, ответом является отклик системы на входной сигнал.) 
-In the case of time series decoding problem object and target spaces are different in nature, the outcome is a system response to the input signal.
+In the case of time series decoding problem the object and target spaces are different in nature, the outcome is a system response to the input signal.
 (Авторегрессионная матрица объектов содержит локальную историю входного сигнала, а авторегрессионная матрица ответов содержит локальную историю отклика.)
-Autoregressive design matrix contains local history of input signal.
-Autoregressive target matrix contains the local history of the response.
+The autoregressive design matrix contains local history of \textcolor{red}{the}  input signal.
+The autoregressive target matrix contains the local history of the response.
 
 (Исходное признаковое пространство является многомерным.) 
 The object space in time series decoding problems is high dimensional.
 (Избыточная размерность признакового пространства приводит к неустойчивости модели.)
-Excessive dimensinality of feature description leads to the model instability.
+Excessive dimensinality of \textcolor{red}{the} feature description leads to instability of the model.
 (Для решения этой проблемы используются методы отбора признаков~\cite{katrutsa2015qpfs,li2016feature}.)
 To solve this problem the feature selection procedures are used~\cite{katrutsa2015qpfs,li2016feature}.
 
 (В работе исследуется метод частных наименьших квадратов (PLS)~\cite{wegelin2000survey,abdi2003pls,geladi1986partial}.)
-Paper considers the partial least squares regression (PLS) model~\cite{wegelin2000survey,abdi2003pls,geladi1986partial}.
+\textcolor{red}{The} paper considers the partial least squares regression (PLS) model~\cite{wegelin2000survey,abdi2003pls,geladi1986partial}.
 (Метод частных наименьших квадратов снижает размерности матрицы признаков и выделяет линейные комбинации признаков, которые оказывают наибольшее влияние на вектор ответов. )
-PLS model reduces the dimension of input data and extracts linear combination of features which have the greatest impact on the response vector.
+\textcolor{red}{The} PLS model reduces the dimension of \textcolor{red}{the} input data and extracts \textcolor{red}{the} linear combination of features which have the greatest impact on the response vector.
 (Выделение признаков происходит итеративно, в порядке уменьшения их влияния на вектор ответов. )
-Feature extraction is iterative process in order of decreasing the influence on the response vector.
+Feature extraction is \textcolor{red}{an} iterative process in order of decreasing the influence on the response vector.
 (Рассматриваются только значимые комбинации признаков, незначительно потеряв в точности прогноза.
 Методы PLS регрессии подробно описаны в работах~\cite{geladi1988pls, hoskuldsson1988plsr,de1993simpls}. )
 PLS regression methods are described in detail in~\cite{geladi1988pls, hoskuldsson1988plsr,de1993simpls}.
 (Разницу между методом PLS и связанными с ним подходами, различные разновидности регрессии PLS можно найти в~\cite{rosipal2006overview}.)
-The difference between various PLS approaches, the different kinds of PLS regression could be found in~\cite{rosipal2006overview}.
+The difference between various PLS approaches, different kinds of the PLS regression could be found in~\cite{rosipal2006overview}.
 
 (Современное состояние области и обзор нелинейных модификаций метода PLS описаны~\cite{rosipal2011npls}.)
-The current state of the field and an overview of nonlinear PLS method modifications are described in~\cite{rosipal2011npls}.
+The current state of the field and \textcolor{red}{the} overview of nonlinear PLS method modifications are described in~\cite{rosipal2011npls}.
 Нелинейное расширение метода PLS регрессии впервые введено в~\cite{wold1989nonlinear}. 
-Nonlinear PLS method extension was introduced in~\cite{wold1989nonlinear}.
+\textcolor{red}{A} nonlinear PLS method extension was introduced in~\cite{wold1989nonlinear}.
 (В литературе были разработаны различные модификации PLS. )
-There have been developed the variety of PLS modifications.
+There has been developed the variety of PLS modifications.
 (Предложены нелинейные методы PLS, основанные на различных моделях: 
 сглаживающих сплайнах~\cite{frank1990npls}, нейронных сетях~\cite{qin1992npls}, базисных радиальных функциях~\cite{yan2003geneticpls}, генетическом алгоритме~\cite{hiden1998geneticpls}. )
-The proposed nonlinear PLS methods are based on smoothing splines~\cite{frank1990npls}, neural networks~\cite{qin1992npls}, radial basis functions~\cite{yan2003geneticpls}, genetic algorithm~\cite{hiden1998geneticpls}.
+The proposed nonlinear PLS methods are based on smoothing splines~\cite{frank1990npls}, neural networks~\cite{qin1992npls}, radial basis functions~\cite{yan2003geneticpls}, genetic algorithms~\cite{hiden1998geneticpls}.
 
 (Результатом отбора признаков является снижение размерности задачи и повышение устойчивости моделей без существенной потери точности прогноза.)
-The result of feature selection is the dimensionality reduction and increasing model stability without significant loss of the prediction quality.
+The result of \textcolor{red}{the} feature selection is the dimensionality reduction and \textcolor{red}{the} increasing model stability without significant loss of the prediction quality.
 (Метод решения задачи применяется к двух наборам данных, имеющих избыточную информацию. )
-The proposed method is used on two datasets with redundant input and target spaces.
+The proposed method is used on two datasets with \textcolor{red}{? the} redundant input and target spaces.
 (Первый набор данных~--- почасовые временные ряды объёмов потребления электроэнергии. 
 Временные ряды соответствуют периоду 1999-2004 годов. )
 The first dataset consists of hourly time series of energy consumption. 
 Time series were collected in Poland from 1999 to 2004.
 
 (Второй набор данных взят из проекта NeuroTycho~\cite{neurotycho}, в котором проектируется нейрокомпьютерный интерфейс (BCI)~\cite{millan2010combining,mason2007comprehensive} для обмена информацией между мозгом и электронным устройством. )
-The second dataset comes from NeuroTycho project~\cite{neurotycho} that designs Brain-Computer Interface (BCI)~\cite{millan2010combining,mason2007comprehensive} for information transmitting betwwen brain and electronic device.
+The second dataset comes from \textcolor{red}{the} NeuroTycho project~\cite{neurotycho} that designs Brain-Computer Interface (BCI)~\cite{millan2010combining,mason2007comprehensive} for information transmitting between brains and electronic devices.
 (Система BCI повышает умственные и физические способности пользователя, обеспечивая прямую связь между мозгом и компьютером~\cite{millan2004brain}. )
 Brain-Computer Interface (BCI) system enhances its user’s mental and physical abilities, providing a direct communication mean between the brain and a computer~\cite{millan2004brain}. 
 (BCI восстанавливает поврежденную функциональность пациентов с нарушениями двигательного или когнитивного развития. )
@@ -157,23 +158,23 @@ ECoG, as well as other invasive techniques, provides more stable recordings and 
 Сигналы ECoG измеряются через 32 канала, в то время как субъект перемещает руку. )
 We address the problem of continuous hand trajectory reconstruction. 
 The subdural ECoG signals are measured across 32 channels as the subject is moving its hand.
-Once the ECoG signals are transformed into informative features, the problem of trajectory reconstruction is a autoregression problem. 
+Once the ECoG signals are transformed into informative features, the problem of trajectory reconstruction is an autoregression problem. 
 Feature extraction involves application of some spectro-temporal transform to the ECoG signals from each channel~\cite{gasanov2017pls}.
 
 (В работах по прогнозированию сложных пространственных временных рядов прогноз выполняется поточечно.)
-Papers which are devoted to forecasting of complex spatial time series the forecast is built pointwise.[{\color{red} сюда напрашиваются ссылки, вставь 2-3 штуки}]
+In papers which are devoted to forecasting of complex spatial time series the forecast is built pointwise.[{\color{red} сюда напрашиваются ссылки, вставь 2-3 штуки}]
 (При необходимости прогнозировать несколько точек одновременно задачу предлагается решать последовательно вычисляя прогноз по точкам. )
-If one need to predict multiple points simultaneously the it is proposed to compute forecasted points sequentially .
+If one need to predict multiple points simultaneously, it is proposed to compute forecasted points sequentially .
 (При этом используются предыдущие спрогнозированные значения для получения последующих.)
 During this process the previous predicted values are used to obtain a subsequent ones.
 (Предлагаемый метод позволяет получать временной ряд прогнозируемых значений одновременно с учётом скрытых зависимостей не только в пространстве объектов, но и в пространстве ответов с согласованием этих двух зависимостей.)
-The proposed method allows to obtain multiple predicted time series values at the same time taking into account hidden dependencies not only in space objects, but also in target space.
+The proposed method allows to obtain multiple predicted time series values at the same time taking into account hidden dependencies not only in \textcolor{red}{the} object space, but also in \textcolor{red}{the} target space.
 (Предлагаемый метод позволил существенно снизить размерность признакового пространства. )
-The proposed method significantly reduced the dimensionality of the feature space.
+The proposed method significantly reduces the dimensionality of the feature space.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Постановка задачи}
+\section{Problem statement}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Задана выборка $\mathfrak{D}= \left( \bX, \bY \right)$, где $\mathbf{X} \in \mathbb{R}^{m \times n}$~--- матрица объектов, $\mathbf{Y} \in \mathbb{R}^{m \times r}$~--- матрица ответов. 
 Способ построения выборки под определенную прикладную задачу описан в разделе \textit{Вычислительный эксперимент}.
@@ -195,7 +196,7 @@ The proposed method significantly reduced the dimensionality of the feature spac
  
 Линейная зависимость столбцов матрицы $\bX$ приводит к неустойчивому решению задачи оптимизации~\eqref{eq::error_function}. Для устранения линейной зависимости применяются методы отбора признаков.
 
-\section{Метод частных наименьших квадратов}
+\section{Partial Least Squares method}
 
 Для устранения линейной зависимости и снижения размерности пространства применяется метод главных компонент PCA. 
 Основным недостатком данного метода является то, что он не учитывает взаимосвязь между объектами и ответами.
@@ -221,13 +222,13 @@ The proposed method significantly reduced the dimensionality of the feature spac
 На этапе тестирования необходимо провести нормировку тестовых данных, вычислить предсказание модели~\ref{eq::model}, а затем провести обратную нормировку.
 
 \begin{algorithm}[h]
-\caption{Алгоритм PLSR}
+\caption{PLSR algorithm}
 \label{PLSR_code}
 \begin{algorithmic}[1]
 	\REQUIRE $\bX, \bY, l$;
 	\ENSURE $\bT, \bP, \bQ$;
-	\STATE нормировать матрицы $\bX$ и $\bY$ по столбцам
-	\STATE инициализировать $\bu_0$ (первый столбец матрицы $\bY$)
+	\STATE normalize matrices $\bX$ и $\bY$ by columns
+	\STATE initialize $\bu_0$ (the first column of $\bY$)
 	\STATE $\bX_1 = \bX; \bY_1 = \bY$
 	\FOR{$k=1,\dots, l$}
 	\REPEAT
@@ -239,7 +240,7 @@ The proposed method significantly reduced the dimensionality of the feature spac
 	\STATE $\bc_k := \bY_k^{\T} \bt_k / (\bt_k^{\T} \bt_k); \quad \bc_k: = \frac{\bc_k}{\| \bc_k \|}$
 	\vspace{0.1cm}
 	\STATE $\bu_k := \bY_k \bc_k$
-	\UNTIL{$\bt_k$ не стабилизируется}
+	\UNTIL{$\bt_k$ stabilizes}
 	\vspace{0.1cm}
 	\STATE $\bp_k:= \bX_k^{\T}\bt_k/(\bt_k^{\T}\bt_k),\ 
 	\bq_k := \bY_k^{\T}\bt_k/(\bt_k^{\T}\bt_k)$
@@ -295,6 +296,8 @@ $\blacksquare$
 Обновление векторов по шагам (6)--(9) алгоритма~\ref{PLSR_code} соответствует максимизации ковариации между векторами $\bt_k$ и $\bu_k$.
 \end{statement}
 Максимальная ковариация между векторами $\bt_k$ и $\bu_k$ равна максимальному собственному значению матрицы $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$:
+\textcolor{blue}{
+The maximum covariance between the vectors $\bt_k$ and $\bu_k$ is equal to the maximum eigenvalue of the matrix $\bX_k^{\T} \bY_k \bY_k^{\T} \bX_k$:}
 \begin{align*}
 \max_{\bt_k, \bu_k}  \text{cov} (\bt_k, \bu_k)^2 &= \max_{\substack{\|\bw_k\|=1 \\ \|\bc_k\| = 1}} \text{cov} \left( \bX_k \bw_k, \bY_k \bc_k \right)^2 = \max_{\substack{\|\bw_k\|=1 \\ \|\bc_k\| = 1}} \text{cov} \left(\bc_k^{\T}  \bY_k^{\T} \bX_k \bw_k \right)^2 = \\
 &= \max_{\|\bw_k\| = 1} \text{cov} \left\|\bY_k^{\T} \bX_k \bw_k \right\|^2 = \max_{\|\bw_k\| = 1} \bw_k^{\T} \bX_k^{\T} \bY_k \bY_k^{\T} \bX_k \bw_k = \\
@@ -302,6 +305,9 @@ $\blacksquare$
 \end{align*}
 где $ \lambda_{\max} (\mathbf{A})$~--- максимальное собственное значение матрицы $\mathbf{A}$.
 Применяя утверждение~\ref{st::eig}, получаем требуемое.
+\textcolor{blue}{
+where $ \lambda_{\max} (\mathbf{A})$~is the maximum eigenvalue of the matrix $\mathbf{A}$.
+Applying the statement~\ref{st::eig}, we obtain the required result.}
 $\blacksquare$
 
 После завершения внутреннего цикла на шаге (11) вычисляются вектора $\bp_k$, $\bq_k$ проецированием столбцов матриц $\bX_k$ и $\bY_k$ на вектор $\bt_k$. Для перехода на следующий шаг необходимо вычесть из матриц $\bX_k$ и $\bY_k$ одноранговые аппроксимации $\bt_k \bp_k^{\T}$ и $\bt_k \bq_k^{\T}$
@@ -331,6 +337,21 @@ $\blacksquare$
 	\label{fig::PLSFigure}
 \end{figure}
 
+\textcolor{blue}{
+Fig.~\ref{fig::PLSFigure} shows the result of the PLS algorithm for the case when the space dimensions of objects, responses and latent variables are equal to 2 ($n = r = l = 2$).
+Blue and green dots show the lines of matrices $\bX$ and $\bY$, respectively. 
+The dots were generated from a normal distribution with zero expectation. 
+A red outline shows the covariances matrice level lines of the distributions. 
+A black outline is a unit circle. 
+Red arrows correspond to principal components. 
+Black arrows correspond to the vectors of matrices $\bW$ and $\bC$ from the PLS algorithm. 
+Vectors $\bt_k$ and $\bu_k$ are equal to the projection matrices $\bX_k$ and $\bY_k$ on the vectors $\bw_k$ and $\bc_k$, respectively, and are shown by black pluses. 
+Account the mutual coupling between the matrices $\bX$ and $\bY$ rejects vectors $\bw_k$ and $\bc_k$ from the directions of the main components. 
+Vectors $\bw_k$ deviate slightly. 
+In the first iteration, $\bc_1$ is close to the principal component $\textit{pc}_1$, but vectors $\bc_k$ found in the next iterations can be strongly correlated. 
+This is due to the fact that from the matrix $\bY$ at each step the peer approximation found in in space of the matrix $\bX_k$ is subtracted.}
+
+
 Для получения прогнозов модели и нахождения параметров модели 
 домножим справа формулу~\eqref{eq::PLS_X} на матрицу $\bW$. Строки матрицы невязок $\bE$ ортогональны столбцам матрицы $\bW$, поэтому 
 \[
@@ -343,6 +364,18 @@ $\blacksquare$
 \end{equation}
 где $\bW^* = \bW (\bP^{\T} \bW)^{-1}$. 
 
+\textcolor{blue}{
+To obtain the model predictions and find the model parameters, we multiply the formula~\eqref{eq::PLS_X} from the right by the matrix $\bW$. Since the rows of the residual matrix  $\bE$ are orthogonal to the columns of the matrix $\bW$, we have
+\[
+	\bX \bW = \bT \bP^{\T} \bW.
+\]
+The linear transformation between objects in the source and latent spaces has the form
+\begin{equation}
+	\bT = \bX \bW^*,
+	\label{eq::W*}
+\end{equation}
+where $\bW^* = \bW (\bP^{\T} \bW)^{-1}$.}
+
 Матрица параметров модели~\ref{eq::model} находится из уравнений~\eqref{eq::PLS_Y},~\eqref{eq::W*}
 \begin{equation*}
     \bY = \bT \bQ^{\T} + \bE = \bX \bW^* \bQ^{\T} + \bE = \bX \bTheta + \bE.
@@ -352,18 +385,39 @@ $\blacksquare$
     \bTheta = \bW (\bP^{\T} \bW)^{-1} \bQ^{\T}.
     \label{eq::model_parameters}
 \end{equation}
+\textcolor{blue}{
+The parameter matrix of the model~\ref{eq::model} is found from equations~\eqref{eq::PLS_Y},~\eqref{eq::W*}
+\begin{equation*}
+    \bY = \bT \bQ^{\T} + \bE = \bX \bW^* \bQ^{\T} + \bE = \bX \bTheta + \bE.
+\end{equation*}
+Thus, the parameters of the model~\eqref{eq::model} are equal to
+\begin{equation}
+    \bTheta = \bW (\bP^{\T} \bW)^{-1} \bQ^{\T}.
+    \label{eq::model_parameters}
+\end{equation}}
 После нахождения параметров модели на этапе тестирования для нахождения предсказания модели необходимо
 \begin{itemize}
 	\item нормировать тестовые данные;	
 	\item вычислить предсказание модели с помощью линейного преобразования с матрицей $\bTheta$ из~\eqref{eq::model_parameters};
 	\item провести обратную нормировку.
 \end{itemize}
-
+\textcolor{blue}{
+To find the model predictions after finding the model parameters during the testing phase we have to
+\begin{itemize}
+	\item normalize the test data;
+	\item compute the prediction of the model using the linear transformation with the matrix $\bTheta$ from~\eqref{eq::model_parameters};
+	\item perform the inverse normalization.
+\end{itemize}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Вычислительный эксперимент}
+\section{Computational experiment}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Временные ряды энергии состоят из почасовых записей (всего 52512 наблюдений), а погодные измерения проводились раз в день и содержат 2188 наблюдений. 
 Строка матрицы $\bX$~--– локальная история сигнала за одну неделю $n = 24 \times 7$. Строка матрицы $\bY$~--- локальный прогноз потребления электроэнергии в следующие 24 часа $r = 24$. В этом случае матрицы $\bX$ и $\bY$ являются авторегрессионными матрицами(можно ссылку).
+
+\textcolor{blue}{
+Energy time series contain hourly records (total of 52512 observations), while weather time series were measured daily and contain 2188 observations. 
+A row of the matrix $\bX$ is the local history of the signal for one week $n = 24 \times 7$. A row of the matrix $\bY$ is the local forecast of electricity consumption for the next 24 hours $r = 24$. In this case, the matrices $\bX$ and $\bY$ are autoregressive matrices (можно ссылку).}
+
 
 В случае данных ECoG матрица $\bX$ состоит из пространственно-временного спектрального представления временных рядов напряжения, а матрица $\bY$ содержит информацию о положении руки. 
 Процесс генерации матрицы $\bX$ из значений напряжения описан в~\cite{gasanov2017pls}. 
@@ -374,11 +428,25 @@ $\blacksquare$
 Ответом является положение руки в несколько следующих моментов времени.
 Требуется предсказать положение руки в несколько следующих моментов времени.
 
+\textcolor{blue}{
+In the case of the ECoG data, the matrix $\bX$ consists of the space-time spectral representation of voltage time series, and the matrix $\bY$ contains information about the position of the hand. 
+The generation process of the matrix $\bX$ from the voltage values described in~\cite{gasanov2017pls}. 
+Feature descriptions in each moment of time has dimension equal to $864$, the hand position is described by the coordinates in three axes. 
+An example of voltage data samples with the different channels and corresponding spatial coordinates of the hand are shown in Fig.~\ref{fig::ecog_data}.
+To predict the movements of the hands we used an autoregressive approach.
+One object consists of a feature description in a few time. 
+The answer is the hand position in the next few moments of time.
+It is required to predict the hand position in the next few moments of time.}
+
 \begin{figure}
 	\includegraphics[width=\linewidth]{figs/ecog_data.eps}
-	\caption{Пример данных ECoG. Слева изображены данные напряжения, снятые с нескольких каналов, справа~--- координаты руки по трём осям.}
+	\caption{Пример данных ECoG. Слева изображены данные напряжения, снятые с нескольких каналов, справа~--- координаты руки по трём осям. The ECoG data example. On the left there is voltage data taken from multiple channels, on the right there are coordinates of the hand in three axes. \textcolor{blue}{как-то неочень}}
 	\label{fig::ecog_data}
 \end{figure}
+
+
+
+
 
 Введём среднеквадратичную ошибку для некоторых матриц $\mathbf{A} = [a_{ij}]$ и $\mathbf{B} = [b_{ij}]$
 \[
@@ -391,58 +459,96 @@ $\blacksquare$
 \end{equation}
 где $\mathbf{\hat{Y}}$~--- прогноз модели, $\mathbf{\bar{Y}}$~--- константный прогноз средним значением по столбцам матрицы.
 
-\subsection{Данные потребления электроэнергии}
+\textcolor{blue}{
+We introduce the mean-squared error for certain matrices $\mathbf{A} = [a_{ij}]$ and $\mathbf{B} = [b_{ij}]$ 
+\[
+\text{MSE} (\mathbf{A}, \mathbf{B}) = \sum_{i,j} (a_{ij} - b_{ij})^2.
+\]
+To estimate the approximation quality, we compute the value of the normalized MSE 
+\begin{equation}
+\text{NMSE}(\bY,  \mathbf{\hat{Y}}) = \frac{\text{MSE} (\bY, \mathbf{\hat{Y}})}{\text{MSE} (\bY, \mathbf{\bar{Y}})},
+\label{eq::nmse}
+\end{equation}
+where $\mathbf{\hat{Y}}$ is the model forecast, $\mathbf{\bar{Y}}$ is the constant forecast by the average value over the columns of the matrix.}
+
+\subsection{Energy consumption dataset}
 
 Для нахождения оптимальной размерности $l$ латентного пространства все данные потребления электроэнергии были разбиты на обучающую и валидационную части. 
 Обучающая выборка состоит из $700$ объектов, валидационная из $370$. Зависимость нормированной квадратичной ошибки~\eqref{eq::nmse} от размерности $l$ латентного пространства представлена на Рис.~\ref{fig::energy_n_comp}. 
 Сначала ошибка резко падает при увеличении размерности скрытого пространства, а затем меняется незначительно.
 
+\textcolor{blue}{
+To find the optimal dimensionality $l$ of the latent space, the electricity consumption dataset was divided into training and validation parts. 
+The training sample consists of $700$ objects, the validation part is of $370$ ones. The dependence of the normalized mean-squared error~\eqref{eq::nmse} on the latent space with dimensionality $l$ is shown in Fig.~\ref{fig::energy_n_comp}. 
+First, the error drops sharply with increasing the latent space dimensionality and then changes slightly.}
+
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.75\linewidth]{figs/energy_n_comp}
-	\caption{Прогноз потребления электроэнергии алгоритмом PLS при размерности латентного пространства $l$=14}
+	\caption{Прогноз потребления электроэнергии алгоритмом PLS при размерности латентного пространства $l$=14. The forecast of electricity consumption by the PLS algorithm when the latent space dimensionality is equal to $l$=14.}
 	\label{fig::energy_n_comp}
 \end{figure}
 
 Минимальная ошибка наблюдается при $l=14$. 
 Построим прогноз потребления электроэнергии при данном $l$. 
-Результат аппроксимации изображен на Рис.~\ref{fig::energy_prediction}. Алгоритм PLS восстановил авторегрессионную зависимость и обнаружил дневную сезонность.
+Результат аппроксимации изображен на Рис.~\ref{fig::energy_prediction}. 
+Алгоритм PLS восстановил авторегрессионную зависимость и обнаружил дневную сезонность.
+
+\textcolor{blue}{
+The minimum error occurs when $l=14$. 
+Let us build a forecast of electricity consumption for a given $l$. 
+The approximation result is shown in Fig.~\ref{fig::energy_prediction}. 
+The PLS algorithm restored the autoregressive dependence and found the daily seasonality.}
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.95\textwidth]{figs/energy_prediction}
-	\caption{Зависимость ошибки от размерности латентного пространства для данных потребления электроэнергии}
+	\caption{Зависимость ошибки от размерности латентного пространства для данных потребления электроэнергии. The dependence of the error on the latent space dimensionality for the energy consumption dataset.}
 	\label{fig::energy_prediction}
 \end{figure}
 
-\subsection{Данные электрокортикограммы}
+\subsection{ECoG dataset}
 
 На Рис.~\ref{fig::ecog_n_comp} представлена зависимость нормированной квадратичной ошибки~\eqref{eq::nmse} от размерности латентного пространства. Ошибка аппроксимации меняется незначительно при $l > 5$.
 Таким образом совместное описание пространственно-временного спектрального представления объектов и пространственного положения руки может быть представлено вектором размерности $l \ll n$.
 Зафиксируем $l = 5$. 
 Пример аппроксимации положения руки изображен на Рис.~\ref{fig::ecog_prediction}. 
 Сплошными линиями изображены истинные координаты руки по всем осям, пунктирными линиями показана аппроксимация методом PLS.
+
+\textcolor{blue}{
+Fig.~\ref{fig::ecog_n_comp} shows the dependence of the normalized quadratic error~\eqref{eq::nmse} on the latent space dimensionality. The approximation error changes slightly when $l > 5$.
+Thus, the joint spatial-temporal spectrum representation of objects and the spatial position of the hand can be represented by a vector of dimensionality $l \ll n$.
+Let us fix $l = 5$. 
+An example of the approximation of the hand position is shown in Fig.~\ref{fig::ecog_prediction}. 
+Solid lines represent the true coordinates of the hand on all axes, the dotted lines show the approximation by the PLS method.}
  
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.75\linewidth]{figs/ecog_n_comp}	
-	\caption{Зависимость ошибки от размерности латентного пространства для данных ECoG}
+	\caption{Зависимость ошибки от размерности латентного пространства для данных ECoG. The dependence of the error on the latent space dimensionality for the ECoG dataset.}
 	\label{fig::ecog_n_comp}
 \end{figure}
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=\textwidth]{figs/ecog_prediction}
-	\caption{Прогноз движения руки данных ECoG алгоритмом PLS при размерности латентного пространства $l=5$}
+	\caption{Прогноз движения руки данных ECoG алгоритмом PLS при размерности латентного пространства $l=5$. The forecast of 
+	the hand movement by the PLS algorithm when the latent space dimensionality is equal to $l$=5.}
 	\label{fig::ecog_prediction}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Заключение}
+\section{Conclusion}
 В данной работе предложен подход к решению задачи декодирования временных рядов и прогнозирования. 
 Алгоритм частичных наименьших квадратов позволяет построить векторный прогноз целевой переменной. 
 Латентное пространство содержит информацию об объектах и ответах и снижает размерности исходных матриц на порядки. 
 Вычислительный эксперимент продемонстрировал применимость предложенного метода к задачам прогнозирования временных рядов объёмов потребления электроэнергии и проектирования нейрокомпьютерного интерфейса.
+
+\textcolor{blue}{
+In the paper we proposed the approach for solving the problem of decoding and forecasting time-series. 
+The algorithm of partial least squares allows to build a target variable vector prediction. 
+The latent space contains information about the objects and the answers and reduces the dimensions of the source (? initial) matrices by orders of magnitude. 
+The computational experiment demonstrated the applicability of the proposed method to the tasks of electricity consumption forecasting and brain-computer interface designing.}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section*{СПИСОК ЛИТЕРАТУРЫ}
 
