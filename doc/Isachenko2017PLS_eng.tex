@@ -60,12 +60,16 @@
 		V.\,V.~Strijov\footnote{A. A. Dorodnicyn Computing Centre, Federal Research Center “Computer Science and Control” of the Russian Academy of Sciences, strijov@ccas.ru}
 	\end{center}
 	\textbf{Abstract:} 
-	The paper is devoted to the problem of detecting the relation between independent and target variables.
-	We propose to predict a multidimensional target vector instead of predicting one timestamp point.
+	The paper is devoted to the problem of decoding multiscaled time series and forecasting.
+	The goal is to recover the dependence between input signal and target responce.
+	The proposed method allows to receive the predicted values not for next time stamp but for the whole range of values in forecast horizon.
+	The prediction is multidimensional target vector instead of one timestamp point. 
 	We consider the linear model of partial least squares (PLS).
 	The method finds the matrix of a joint description for the design matrix and the outcome matrix.
-	The description is low-dimensional and allows to build a simple, stable model.
-	We conducted computational experiments on the real data of energy consumption and electrocorticograms signals (ECoG).
+	The obtained latent space of the joint descriptions is low-dimensional.
+	This leads to a simple, stable predictive model.
+	We conducted computational experiments on the real data of energy consumption and electrocorticograms signals (ECoG). 
+	The experiments shows significant reduction of the dimensionality of the original spaces and models achieve good quality of prediction.
 	
 	\bigskip
 	\textbf{Keywords}: time series decoding, forecast, partial least squares, dimensionality reduction
@@ -106,7 +110,7 @@ The proposed method is used on two datasets with the redundant input and target 
 The first dataset consists of hourly time series of energy consumption. 
 Time series were collected in Poland from 1999 to 2004.
 
-The second dataset comes from the NeuroTycho project~\cite{neurotycho} that designs Brain-Computer \textcolor{red}{съехало почему-то} Interface (BCI)~\cite{millan2010combining,mason2007comprehensive} for information transmitting between brains and electronic devices.
+The second dataset comes from the NeuroTycho project~\cite{neurotycho} that designs brain-computer interface (BCI)~\cite{millan2010combining,mason2007comprehensive} for information transmitting between brains and electronic devices.
 Brain-Computer Interface (BCI) system enhances its user’s mental and physical abilities, providing a direct communication mean between the brain and a computer~\cite{millan2004brain}. 
 BCIs aim at restoring damaged functionality of motorically or cognitively impaired patients.
 The goal of motor imagery analysis is to recognize intended movements from the recorded brain activity. 
@@ -153,10 +157,10 @@ Define the quadratic error function $S$ for the dataset $\mathfrak{D}$:
 
 To eliminate the linear dependence and reduce the dimensionality of the input space, the principal components analysis (PCA) is widely used. 
 The main disadvantage of the PCA method is its insensitivity to the interrelation between the objects and the responses.
-\textcolor{red}{The} partial least squares (PLS) algorithm projects the design matrix $\bX$ and the target matrix \textcolor{red}{to} \textcolor{red}{the} latent space $\mathbb{R}^l$ with low dimensionality ($l < r < n$).
+The partial least squares algorithm projects the design matrix $\bX$ and the target matrix to the latent space $\mathbb{R}^l$ with low dimensionality ($l < r < n$).
 The PLS algorithm finds the latent space matrix $\bT \in \mathbb{R}^{m \times l}$ that best describes the original matrices $\bX$ and $\bY$.
 
-The disign matrix $\bX$ and the target matrix $\bY$ \textcolor{red}{are} projected into the latent space in the following way:
+The design matrix $\bX$ and the target matrix $\bY$ are projected into the latent space in the following way:
 \begin{align}
 \label{eq::PLS_X}
  \underset{m \times n}{\vphantom{\bQ}\bX} 
@@ -167,7 +171,7 @@ The disign matrix $\bX$ and the target matrix $\bY$ \textcolor{red}{are} project
  &= \underset{m \times l}{\vphantom{\bQ}\bT} \cdot \underset{l \times r}{\bQ^{\T}} + \underset{m \times r}{\vphantom{\bQ}\bE}
  =  \sum_{k=1}^l  \underset{m \times 1}{\vphantom{\bq_k^{\T}}\bt_k} \cdot \underset{1 \times r}{\bq_k^{\T}} +  \underset{m \times r}{\vphantom{\bq_k^{\T}}\bE},
 \end{align}
-\textcolor{red}{where $\bT$} is a matrix of a joint description of the objects and the outcomes in the latent space, and the columns of the matrix $\bT$ are orthogonal; $\bP,\ \bQ$ are transition matrices from the latent space to the original space; $\bE,\ \bF$ are residual matrices.
+where $\bT$ is a matrix of a joint description of the objects and the outcomes in the latent space, and the columns of the matrix $\bT$ are orthogonal; $\bP,\ \bQ$ are transition matrices from the latent space to the original space; $\bE,\ \bF$ are residual matrices.
 
 The pseudocode of the PLS regression algorithm is given in the algorithm~\ref{PLSR_code}.
 In each of the $l$ steps the algorithm iteratively calculates columns $\bt_k$, $\bp_k$, $\bq_k$ of the matrices $\bT$, $\bP$, $\bQ$, respectively. 
@@ -239,7 +243,7 @@ These vectors construct the matrices $\bW$ and $\bC$, respectively.
 
 The statement follows from the fact that the update rule for vectors $\bw_k$, $\bc_k$ coincides with the iteration of the power method for the maximum eigenvalue.
 
-Let a matrix $\mathbf{A}$ be diagonilized, $\bx$ be some vector, then
+Let a matrix $\mathbf{A}$ be diagonalizable, $\bx$ be some vector, then
 \[
 	\lim_{k \rightarrow \infty} \mathbf{A}^k \bx = \lambda_{\max}(\mathbf{A}) \cdot \mathbf{v}_{\max},
 \]
@@ -273,12 +277,12 @@ Let assume that the dimension of object, response and latent variable spaces are
 Fig.~\ref{fig::PLSFigure} shows the result of the PLS algorithm in this case.
 Blue and green dots represent the rows of the matrices $\bX$ and $\bY$, respectively. 
 The dots were generated from a normal distribution with zero expectation. 
-\textcolor{red}{Contours of the distribution covariance matrices} are shown in red.
+Contours of the distribution covariance matrices are shown in red.
 Black contours are unit circles. 
 Red arrows correspond to principal components for the set of points. 
 Black arrows correspond to the vectors of the matrices $\bW$ and $\bC$ from the PLS algorithm. 
 The vectors $\bt_k$ and $\bu_k$ are equal to the projected matrices $\bX_k$ and $\bY_k$ to the vectors $\bw_k$ and $\bc_k$, respectively, and are denoted by black pluses. 
-Taking into account the interaction between the matrices $\bX$ and $\bY$ deviates the vectors $\bw_k$ and $\bc_k$ from the principal \textcolor{red}{components - не знаю можно ли писать просто во множественном числе} directions. 
+Taking into account the interaction between the matrices $\bX$ and $\bY$ the vectors $\bw_k$ and $\bc_k$ deviates from the principal components directions. 
 The deviation of the vectors $\bw_k$ is insignificant. 
 In the first iteration, $\bc_1$ is close to the principal component $\textit{pc}_1$, but the vectors $\bc_k$ in the next iterations could strongly correlate. 
 The difference in the behaviour of the vectors $\bw_k$ and $\bc_k$ is associated with the deflation process. In particular, we subtract from $\bY$ the one-rank approximation found in the space of the matrix $\bX$.
@@ -289,7 +293,7 @@ The difference in the behaviour of the vectors $\bw_k$ and $\bc_k$ is associated
 	\label{fig::PLSFigure}
 \end{figure}
 
-To obtain the model predictions and find the model parameters, let multiply the both \textcolor{red}{hand-}sides of the equation~\eqref{eq::PLS_X} by the matrix $\bW$. Since the rows of the residual matrix  $\bE$ are orthogonal to the columns of the matrix $\bW$, we have
+To obtain the model predictions and find the model parameters, let multiply the both hand sides of the equation~\eqref{eq::PLS_X} by the matrix $\bW$. Since the rows of the residual matrix  $\bE$ are orthogonal to the columns of the matrix $\bW$, we have
 \[
 	\bX \bW = \bT \bP^{\T} \bW.
 \]
@@ -351,7 +355,7 @@ To estimate the prediction quality, we compute the normalized MSE
 \text{NMSE}(\bY,  \mathbf{\hat{Y}}) = \frac{\text{MSE} (\bY, \mathbf{\hat{Y}})}{\text{MSE} (\bY, \mathbf{\bar{Y}})},
 \label{eq::nmse}
 \end{equation}
-where $\mathbf{\hat{Y}}$ is the model outcome, $\mathbf{\bar{Y}}$ is the фмукфпу constant forecast over the columns of the matrix.
+where $\mathbf{\hat{Y}}$ is the model outcome, $\mathbf{\bar{Y}}$ is the average constant forecast over the columns of the matrix.
 
 \subsection{Energy consumption dataset}
 
@@ -403,9 +407,10 @@ Solid lines represent the true coordinates of the hand along all axes, the dotte
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
 In the paper we proposed the approach for solving the problem of time series decoding and forecasting. 
-The algorithm of partial least squares allows to build a \textcolor{red}{vector target variable prediction -> target vector prediction}. 
-The latent space contains information about the objects and the responses and dramatically reduces the dimensionsionalies of the input matrices. 
+The algorithm of partial least squares allows to build a simple, stable and linear model. 
+The obtained latent space gathers information about the objects and the responses and dramatically reduces the dimensionality of the input matrices. 
 The computational experiment demonstrated the applicability of the proposed method to the tasks of electricity consumption forecasting and brain-computer interface designing.
+The future research will be aimed to the extension of the proposed method for the class of non-linear dependencies.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \bibliographystyle{unsrt}
